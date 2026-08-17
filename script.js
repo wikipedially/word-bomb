@@ -4,7 +4,7 @@ let displayedCount = 0;
 const BATCH_SIZE = 100;
 
 let sortType = 'alpha'; // 'alpha' or 'length'
-let sortDirection = 'asc'; // 'asc' or 'desc'
+let sortDirection = 'desc'; // 'asc' or 'desc'
 
 // fetch dict.json when page is loaded
 async function loadDictionary() {
@@ -51,7 +51,7 @@ searchInput.addEventListener('input', (e) => {
 // sort type button listener
 sortTypeBtn.addEventListener('click', () => {
   sortType = sortType === 'alpha' ? 'length' : 'alpha';
-  
+
   // update icon
   if (sortType === 'alpha') {
     sortTypeIcon.className = 'fa-solid fa-arrow-down-a-z';
@@ -69,7 +69,7 @@ sortTypeBtn.addEventListener('click', () => {
 // sort direction button listener
 sortDirBtn.addEventListener('click', () => {
   sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-  
+
   // update icon
   if (sortDirection === 'asc') {
     sortDirIcon.className = 'fa-solid fa-arrow-up';
@@ -81,6 +81,15 @@ sortDirBtn.addEventListener('click', () => {
 
   if (currentMatchedWords.length > 0) {
     applySortingAndRender();
+  }
+});
+
+// press '/' to focus search input
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && document.activeElement !== searchInput) {
+    e.preventDefault(); // Prevents typing '/' into the input box itself
+    searchInput.focus();
+    searchInput.select();
   }
 });
 
@@ -148,19 +157,32 @@ function renderResults() {
 
   let batchHtml = '';
   batchToRender.forEach((word) => {
-    batchHtml += `<button class="word-pill" data-word="${word}">${word}</button>`;
+    const hasDefinition =
+      dictionaryData[word] && dictionaryData[word].length > 0;
+    const cssClass = hasDefinition
+      ? 'word-pill has-definition'
+      : 'word-pill no-definition';
+
+    batchHtml += `<button class="${cssClass}" data-word="${word}">${word}</button>`;
   });
 
   gridContainer.insertAdjacentHTML('beforeend', batchHtml);
   displayedCount = nextBatchEnd;
-  
+
   gridContainer.querySelectorAll('.word-pill').forEach((btn) => {
     if (!btn.dataset.bound) {
       btn.dataset.bound = 'true';
-      btn.addEventListener('click', () => {
-        const word = btn.getAttribute('data-word');
-        openModal(word);
-      });
+      const word = btn.getAttribute('data-word');
+      const hasDefinition =
+        dictionaryData[word] && dictionaryData[word].length > 0;
+
+      if (hasDefinition) {
+        btn.addEventListener('click', () => {
+          openModal(word);
+        });
+      } else {
+        btn.style.cursor = 'default';
+      }
     }
   });
 }

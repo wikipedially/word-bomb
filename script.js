@@ -4,7 +4,7 @@ let displayedCount = 0;
 const BATCH_SIZE = 100;
 
 let sortType = 'alpha'; // 'alpha' or 'length'
-let sortDirection = 'desc'; // 'asc' or 'desc'
+let sortDirection = 'asc'; // 'asc' or 'desc'
 
 // fetch dict.json when page is loaded
 async function loadDictionary() {

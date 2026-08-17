@@ -98,13 +98,32 @@ function searchWords(query) {
   const words = Object.keys(dictionaryData);
   let matchedWords = [];
 
-  try {
-    const regex = new RegExp(query, 'i');
-    matchedWords = words.filter((word) => regex.test(word));
-  } catch (err) {
-    matchedWords = words.filter((word) =>
-      word.toLowerCase().includes(query.toLowerCase())
-    );
+  const isDefinedFilter = query.toLowerCase().startsWith('@defined');
+
+  if (isDefinedFilter) {
+    const definedWords = words.filter((word) => dictionaryData[word] && dictionaryData[word].length > 0);
+
+    const subQuery = query.slice(8).trim();
+
+    if (subQuery === '') {
+      matchedWords = definedWords;
+    } else {
+      try {
+        const regex = new RegExp(subQuery, 'i');
+        matchedWords = definedWords.filter((word) => regex.test(word));
+      } catch (err) {
+        matchedWords = definedWords.filter((word) => word.toLowerCase().includes(subQuery.toLowerCase())
+        );
+      }
+    }
+  } else {
+    try {
+      const regex = new RegExp(query, 'i');
+      matchedWords = words.filter((word) => regex.test(word));
+    } catch (err) {
+      matchedWords = words.filter((word) => word.toLowerCase().includes(query.toLowerCase())
+      );
+    }
   }
 
   currentMatchedWords = matchedWords;

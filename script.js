@@ -1,7 +1,7 @@
 let dictionaryData = {};
 let currentMatchedWords = [];
 let displayedCount = 0;
-const BATCH_SIZE = 100;
+const BATCH_SIZE = 200;
 
 let sortType = 'alpha'; // 'alpha' or 'length'
 let sortDirection = 'asc'; // 'asc' or 'desc'
@@ -33,6 +33,9 @@ const sortTypeBtn = document.getElementById('sort-type-btn');
 const sortTypeIcon = document.getElementById('sort-type-icon');
 const sortDirBtn = document.getElementById('sort-dir-btn');
 const sortDirIcon = document.getElementById('sort-dir-icon');
+
+// render initial placeholder section on load
+renderPlaceholder();
 
 // user input text box
 searchInput.addEventListener('input', (e) => {
@@ -93,6 +96,38 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+// render default placeholder section with clickable RegEx link
+function renderPlaceholder() {
+  resultsContainer.innerHTML = `
+    <div class="placeholder-wrapper">
+      <p class="placeholder-text">Enter a search query for results.</p>
+      <p class="placeholder-hint">allows <span id="regex-help-link" class="interactive-link">RegEx</span> queries.</p>
+    </div>
+  `;
+
+  const regexHelpLink = document.getElementById('regex-help-link');
+  if (regexHelpLink) {
+    regexHelpLink.addEventListener('click', () => {
+      openRegexHelpModal();
+    });
+  }
+}
+
+function openRegexHelpModal() {
+  let content = `<h2>RegEx Search Guide</h2>`;
+  content += `<p><b>reg</b>ular <b>ex</b>pression can be used for advanced pattern matching in search queries. here are a few examples:</p>`;
+  content += `<ul class="def-list" style="margin-left: 1rem;">`;
+  content += `<li><strong>^a</strong> - finds words starting with "a" (e.g., "<b>A</b>pple")</li>`;
+  content += `<li><strong>a$</strong> - finds word ending with "a" (e.g., "comm<b>A</b>")</li>`;
+  content += `<li><strong>a.a</strong> - matches any character to [<b>.</b>] (e.g., "<b>A</b>n<b>A</b>", "l<b>A</b>v<b>A</b>")</li>`;
+  content += `<li><strong>[aeiou]{3}</strong> - finds words with 3 vowels in a row</li>`;
+  content += `</ul>`;
+  content += `<p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-subtle);">Tip: <strong>@defined</strong> can also be used to list all words that have definitions.</p>`;
+
+  modalBody.innerHTML = content;
+  modal.classList.remove('hidden');
+}
+
 // search filter logic
 function searchWords(query) {
   const words = Object.keys(dictionaryData);
@@ -149,7 +184,7 @@ function applySortingAndRender() {
   renderResults();
 }
 
-// display filtered words in batches (100) with infinite scroll support
+// display filtered words in batches (BATCH_SIZE) with infinite scroll support
 function renderResults() {
   if (currentMatchedWords.length === 0) {
     resultsContainer.innerHTML = `<p class="placeholder-text">No matching words found.</p>`;

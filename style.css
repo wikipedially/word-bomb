@@ -161,11 +161,33 @@ main {
   min-height: 200px;
 }
 
-.placeholder-text {
-  color: var(--text-placeholder);
+.placeholder-wrapper {
   text-align: center;
   margin-top: 3rem;
+}
+
+.placeholder-text {
+  color: var(--text-placeholder);
   font-style: italic;
+  margin: 0 0 0.5rem 0;
+}
+
+.placeholder-hint {
+  color: var(--text-subtle);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.interactive-link {
+  color: var(--text-tag);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.15s ease;
+}
+
+.interactive-link:hover {
+  opacity: 0.8;
 }
 
 .word-grid {

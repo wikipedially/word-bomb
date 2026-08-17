@@ -73,6 +73,8 @@ main {
   display: block;
   margin: 0 auto 0.5rem auto;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+  transform: scale(1.3);
+  transform-origin: center bottom;
 }
 
 .search-title {

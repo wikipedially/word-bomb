@@ -3,6 +3,9 @@ let currentMatchedWords = [];
 let displayedCount = 0;
 const BATCH_SIZE = 100;
 
+let sortType = 'alpha'; // 'alpha' or 'length'
+let sortDirection = 'desc'; // 'asc' or 'desc'
+
 // fetch dict.json when page is loaded
 async function loadDictionary() {
   try {
@@ -26,6 +29,10 @@ const resultsContainer = document.getElementById('results-container');
 const modal = document.getElementById('modal');
 const modalBody = document.getElementById('modal-body');
 const closeModalBtn = document.getElementById('close-modal');
+const sortTypeBtn = document.getElementById('sort-type-btn');
+const sortTypeIcon = document.getElementById('sort-type-icon');
+const sortDirBtn = document.getElementById('sort-dir-btn');
+const sortDirIcon = document.getElementById('sort-dir-icon');
 
 // user input text box
 searchInput.addEventListener('input', (e) => {
@@ -39,6 +46,42 @@ searchInput.addEventListener('input', (e) => {
   }
 
   searchWords(query);
+});
+
+// sort type button listener
+sortTypeBtn.addEventListener('click', () => {
+  sortType = sortType === 'alpha' ? 'length' : 'alpha';
+  
+  // update icon
+  if (sortType === 'alpha') {
+    sortTypeIcon.className = 'fa-solid fa-arrow-down-a-z';
+    sortTypeBtn.title = 'Current: Alphabetical (Click to switch to Length)';
+  } else {
+    sortTypeIcon.className = 'fa-solid fa-arrow-down-1-9';
+    sortTypeBtn.title = 'Current: Length (Click to switch to Alphabetical)';
+  }
+
+  if (currentMatchedWords.length > 0) {
+    applySortingAndRender();
+  }
+});
+
+// sort direction button listener
+sortDirBtn.addEventListener('click', () => {
+  sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+  
+  // update icon
+  if (sortDirection === 'asc') {
+    sortDirIcon.className = 'fa-solid fa-arrow-up';
+    sortDirBtn.title = 'Current: Ascending (Click to switch to Descending)';
+  } else {
+    sortDirIcon.className = 'fa-solid fa-arrow-down';
+    sortDirBtn.title = 'Current: Descending (Click to switch to Ascending)';
+  }
+
+  if (currentMatchedWords.length > 0) {
+    applySortingAndRender();
+  }
 });
 
 // search filter logic
@@ -55,11 +98,26 @@ function searchWords(query) {
     );
   }
 
-  matchedWords.sort((a, b) => a.localeCompare(b));
-
   currentMatchedWords = matchedWords;
-  displayedCount = 0;
+  applySortingAndRender();
+}
 
+// sorting utility function
+function applySortingAndRender() {
+  currentMatchedWords.sort((a, b) => {
+    let comparison = 0;
+    if (sortType === 'alpha') {
+      comparison = a.localeCompare(b);
+    } else {
+      comparison = a.length - b.length;
+      if (comparison === 0) {
+        comparison = a.localeCompare(b);
+      }
+    }
+    return sortDirection === 'asc' ? comparison : -comparison;
+  });
+
+  displayedCount = 0;
   renderResults();
 }
 

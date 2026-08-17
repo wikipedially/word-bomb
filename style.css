@@ -102,6 +102,7 @@ main {
   outline: none;
   text-align: center;
   transition: all 0.2s ease;
+  caret-color: var(--text-subtle);
 }
 
 #search-input:focus {
@@ -127,10 +128,13 @@ main {
 .word-grid {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5rem;
   max-height: 400px;
   overflow-y: auto;
   padding-right: 0.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-subtle) transparent;
 }
 
 .word-pill {

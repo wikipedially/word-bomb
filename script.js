@@ -1,4 +1,7 @@
 let dictionaryData = {};
+let currentMatchedWords = [];
+let displayedCount = 0;
+const BATCH_SIZE = 100;
 
 // fetch dict.json when page is loaded
 async function loadDictionary() {
@@ -30,6 +33,8 @@ searchInput.addEventListener('input', (e) => {
 
   if (query === '') {
     resultsContainer.innerHTML = `<p class="placeholder-text">Enter a search query for results.</p>`;
+    currentMatchedWords = [];
+    displayedCount = 0;
     return;
   }
 
@@ -52,39 +57,64 @@ function searchWords(query) {
 
   matchedWords.sort((a, b) => a.localeCompare(b));
 
-  renderResults(matchedWords);
+  currentMatchedWords = matchedWords;
+  displayedCount = 0;
+
+  renderResults();
 }
 
-// display filtered words
-function renderResults(words) {
-  if (words.length === 0) {
+// display filtered words in batches (100) with infinite scroll support
+function renderResults() {
+  if (currentMatchedWords.length === 0) {
     resultsContainer.innerHTML = `<p class="placeholder-text">No matching words found.</p>`;
     return;
   }
 
-  const displayWords = words.slice(0, 100); // limit word display to 100
+  if (displayedCount === 0) {
+    let html = `<p style="font-size: 0.85rem; color: var(--text-subtle); margin-bottom: 0.5rem;">Found ${currentMatchedWords.length} matches:</p>`;
+    html += `<div class="word-grid" id="word-grid-container"></div>`;
+    resultsContainer.innerHTML = html;
 
-  let html = `<p style="font-size: 0.85rem; color: #888; margin-bottom: 0.5rem;">Found ${words.length} matches:</p>`;
-  html += `<div class="word-grid">`;
-
-  displayWords.forEach((word) => {
-    html += `<button class="word-pill" data-word="${word}">${word}</button>`;
-  });
-
-  if (words.length > 100) {
-    html += `<p style="color: #888; font-style: italic; margin-top: 0.5rem;">Showing first 100 results...</p>`;
+    const gridContainer = document.getElementById('word-grid-container');
+    gridContainer.addEventListener('scroll', handleGridScroll);
   }
 
-  html += `</div>`;
-  resultsContainer.innerHTML = html;
+  const gridContainer = document.getElementById('word-grid-container');
+  if (!gridContainer) return;
 
-  // click listeners for word-pills
-  document.querySelectorAll('.word-pill').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const word = btn.getAttribute('data-word');
-      openModal(word);
-    });
+  const nextBatchEnd = Math.min(
+    displayedCount + BATCH_SIZE,
+    currentMatchedWords.length
+  );
+  const batchToRender = currentMatchedWords.slice(displayedCount, nextBatchEnd);
+
+  let batchHtml = '';
+  batchToRender.forEach((word) => {
+    batchHtml += `<button class="word-pill" data-word="${word}">${word}</button>`;
   });
+
+  gridContainer.insertAdjacentHTML('beforeend', batchHtml);
+  displayedCount = nextBatchEnd;
+  
+  gridContainer.querySelectorAll('.word-pill').forEach((btn) => {
+    if (!btn.dataset.bound) {
+      btn.dataset.bound = 'true';
+      btn.addEventListener('click', () => {
+        const word = btn.getAttribute('data-word');
+        openModal(word);
+      });
+    }
+  });
+}
+
+// checks if scrolled near bottom of word list
+function handleGridScroll(e) {
+  const target = e.target;
+  if (target.scrollTop + target.clientHeight >= target.scrollHeight - 30) {
+    if (displayedCount < currentMatchedWords.length) {
+      renderResults();
+    }
+  }
 }
 
 // modal body

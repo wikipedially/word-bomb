@@ -13,7 +13,7 @@
   "AALII": [
     {
       "pos": "noun",
-      "def": "Hawaiian name for Dodonaea viscosa, known as hopbush or broadleaf hopbush in English. A tough, bushy shrub or small tree found in warm parts of the world that has sticky leaves and colorful, papery seed pods."
+      "def": "Hawaiian name for Dodonaea viscosa, known as hopbush or broadleaf hopbush in English.\n\nA tough, bushy shrub or small tree found in warm parts of the world that has sticky leaves and colorful, papery seed pods."
     }
   ],
   "AALIIS": [
@@ -280304,9 +280304,24 @@
   "WELSHES": [],
   "WELSHING": [],
   "WELT": [],
-  "WELTANSCHAUUNG": [],
-  "WELTANSCHAUUNGEN": [],
-  "WELTANSCHAUUNGS": [],
+  "WELTANSCHAUUNG": [
+    {
+      "pos": "noun",
+      "def": "Different worldview or overarching ways of looking at life and the universe.\n\nFrom German 'Welt' meaning world, and 'Anschauung' meaning view or perception."
+    }
+  ],
+  "WELTANSCHAUUNGEN": [
+    {
+      "pos": "noun, pl.",
+      "def": "Plural form of weltanschauung"
+    }
+  ],
+  "WELTANSCHAUUNGS": [
+    {
+      "pos": "noun, pl. (DE)",
+      "def": "Plural form of weltanschauung"
+    }
+  ],
   "WELTED": [],
   "WELTER": [],
   "WELTERED": [],

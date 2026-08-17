@@ -10,8 +10,18 @@
   "AAHING": [],
   "AAHS": [],
   "AAL": [],
-  "AALII": [],
-  "AALIIS": [],
+  "AALII": [
+    {
+      "pos": "noun",
+      "def": "Hawaiian name for Dodonaea viscosa, known as hopbush or broadleaf hopbush in English. A tough, bushy shrub or small tree found in warm parts of the world that has sticky leaves and colorful, papery seed pods."
+    }
+  ],
+  "AALIIS": [
+    {
+      "pos": "noun, pl.",
+      "def": "Plural form of aalii."
+    }
+  ],
   "AALS": [],
   "AARDVARK": [],
   "AARDVARKS": [],
@@ -166936,8 +166946,18 @@
   "OLOGOANING": [],
   "OLOGOANS": [],
   "OLOGY": [],
-  "OLOLIUQUI": [],
-  "OLOLIUQUIS": [],
+  "OLOLIUQUI": [
+    {
+      "pos": "noun",
+      "def": "A tropical morning glory vine native to Mexico and Central America, whose small, brown, oval seeds have strong psychedelic effects. From Nahuatl 'ololiuhqui', referring to the small, round seeds of the morning glory, not the plant itself. The plant is called 'coaxihuitl' in Nahuatl."
+    }
+  ],
+  "OLOLIUQUIS": [
+    {
+      "pos": "noun, pl.",
+      "def": "Plural form of ololiuqui."
+    }
+  ],
   "OLOROSO": [],
   "OLOROSOS": [],
   "OLPAE": [],
@@ -284239,7 +284259,12 @@
   "XERUS": [],
   "XERUSES": [],
   "XI": [],
-  "XIPHIHUMERALIS": [],
+  "XIPHIHUMERALIS": [
+    {
+      "pos": "noun",
+      "def": "Mainly of felines, a chest muscle that stretches from the lower part of the breastbone (xiphoid) to the upper arm bone (humerus)."
+    }
+  ],
   "XIPHIPLASTRA": [],
   "XIPHIPLASTRAL": [],
   "XIPHIPLASTRALS": [],

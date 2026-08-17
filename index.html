@@ -4,8 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Word Bomb Lookup</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="script.js"></script>
 </head>
 <body>
-    
+    <main>
+        <h1>Word Bomb Search</h1>
+        <div class="search-controls">
+            <input type="text" id="search-input" placeholder="Type prompt" autofocus>
+        </div>
+        <div id="results-container">
+            <p class="placeholder-text">Enter a search query for results.</p>
+        </div>
+    </main>
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <button id="close-modal">&times;</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
 </body>
 </html>

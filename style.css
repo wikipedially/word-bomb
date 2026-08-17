@@ -1,5 +1,4 @@
 :root {
-  /* Moody Dark Monotone Palette with Subtle Warm Glows */
   --bg-main: #0f0e13;
   --bg-surface: #17161d;
   --bg-surface-alt: #1d1b24;
@@ -28,7 +27,7 @@
   --radius-pill: 24px;
 }
 
-/* Atmospheric Background Gradient */
+/* background gradient */
 body {
   background-color: var(--bg-main);
   background-image: radial-gradient(
@@ -38,7 +37,7 @@ body {
     ),
     radial-gradient(
       circle at 85% 85%,
-      rgba(255, 210, 125, 0.06) 0%,
+      rgba(255, 204, 110, 0.151) 0%,
       transparent 45%
     );
   background-attachment: fixed;

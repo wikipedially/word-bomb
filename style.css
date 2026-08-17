@@ -68,7 +68,7 @@ main {
 }
 
 .logo-img {
-  max-width: 420px;
+  max-width: 300px;
   height: auto;
   display: block;
   margin: 0 auto -0.2rem auto;
@@ -81,6 +81,7 @@ main {
   letter-spacing: 3px;
   color: var(--text-subtle);
   margin: 0;
+  margin-top: -2.7rem;
   text-transform: uppercase;
 }
 

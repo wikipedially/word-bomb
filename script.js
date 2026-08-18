@@ -42,7 +42,7 @@ searchInput.addEventListener('input', (e) => {
   const query = e.target.value.trim();
 
   if (query === '') {
-    resultsContainer.innerHTML = `<p class="placeholder-text">Enter a search query for results.</p>`;
+    renderPlaceholder();
     currentMatchedWords = [];
     displayedCount = 0;
     return;
@@ -90,7 +90,7 @@ sortDirBtn.addEventListener('click', () => {
 // press '/' to focus search input
 document.addEventListener('keydown', (e) => {
   if (e.key === '/' && document.activeElement !== searchInput) {
-    e.preventDefault(); // Prevents typing '/' into the input box itself
+    e.preventDefault();
     searchInput.focus();
     searchInput.select();
   }
@@ -128,30 +128,83 @@ function openRegexHelpModal() {
   modal.classList.remove('hidden');
 }
 
+
+// checks if a word has a valid definition
+function wordHasRealDefinition(word) {
+  const entries = dictionaryData[word];
+  if (!entries || !Array.isArray(entries)) return false;
+
+  return entries.some((entry) => {
+    if (!entry.def) return false;
+    if (Array.isArray(entry.def)) return entry.def.length > 0;
+    return typeof entry.def === 'string' && entry.def.trim() !== '';
+  });
+}
+
 // search filter logic
 function searchWords(query) {
   const words = Object.keys(dictionaryData);
   let matchedWords = [];
 
-  const isDefinedFilter = query.toLowerCase().startsWith('@defined');
+  const queryLower = query.toLowerCase();
 
-  if (isDefinedFilter) {
-    const definedWords = words.filter((word) => dictionaryData[word] && dictionaryData[word].length > 0);
+  // check if query uses @def command
+  if (queryLower.startsWith('@def')) {
+    // all words that are defined
+    let definedWords = words.filter((word) => wordHasRealDefinition(word));
 
-    const subQuery = query.slice(8).trim();
+    // check if part-of-speech filter is included
+    if (queryLower.startsWith('@def:')) {
+      const spaceIndex = query.indexOf(' ');
+      let posQuery = '';
+      let subQuery = '';
 
-    if (subQuery === '') {
-      matchedWords = definedWords;
+      if (spaceIndex !== -1) {
+        posQuery = query.slice(5, spaceIndex).trim().toLowerCase();
+        subQuery = query.slice(spaceIndex + 1).trim();
+      } else {
+        posQuery = query.slice(5).trim().toLowerCase();
+      }
+
+      const posRegex = new RegExp(`\\b${posQuery}\\b`, 'i');
+
+      // search all entries so that words with POS tag, WITHOUT definitions, still appear in results
+      let posFilteredWords = words.filter((word) => {
+        const entries = dictionaryData[word];
+        if (!entries || !Array.isArray(entries)) return false;
+        return entries.some((entry) => entry.pos && posRegex.test(entry.pos));
+      });
+
+      // if there is extra text after POS tag (regex query), filter further
+      if (subQuery !== '') {
+        try {
+          const regex = new RegExp(subQuery, 'i');
+          matchedWords = posFilteredWords.filter((word) => regex.test(word));
+        } catch (err) {
+          matchedWords = posFilteredWords.filter((word) => word.toLowerCase().includes(subQuery.toLowerCase())
+          );
+        }
+      } else {
+        matchedWords = posFilteredWords;
+      }
     } else {
-      try {
-        const regex = new RegExp(subQuery, 'i');
-        matchedWords = definedWords.filter((word) => regex.test(word));
-      } catch (err) {
-        matchedWords = definedWords.filter((word) => word.toLowerCase().includes(subQuery.toLowerCase())
-        );
+      // normal @def query logic
+      const subQuery = query.slice(4).trim();
+
+      if (subQuery === '') {
+        matchedWords = definedWords;
+      } else {
+        try {
+          const regex = new RegExp(subQuery, 'i');
+          matchedWords = definedWords.filter((word) => regex.test(word));
+        } catch (err) {
+          matchedWords = definedWords.filter((word) => word.toLowerCase().includes(subQuery.toLowerCase())
+          );
+        }
       }
     }
   } else {
+    // normal search logic without @def
     try {
       const regex = new RegExp(query, 'i');
       matchedWords = words.filter((word) => regex.test(word));
@@ -211,8 +264,7 @@ function renderResults() {
 
   let batchHtml = '';
   batchToRender.forEach((word) => {
-    const hasDefinition =
-      dictionaryData[word] && dictionaryData[word].length > 0;
+    const hasDefinition = wordHasRealDefinition(word);
     const cssClass = hasDefinition
       ? 'word-pill has-definition'
       : 'word-pill no-definition';
@@ -227,8 +279,7 @@ function renderResults() {
     if (!btn.dataset.bound) {
       btn.dataset.bound = 'true';
       const word = btn.getAttribute('data-word');
-      const hasDefinition =
-        dictionaryData[word] && dictionaryData[word].length > 0;
+      const hasDefinition = wordHasRealDefinition(word);
 
       if (hasDefinition) {
         btn.addEventListener('click', () => {

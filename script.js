@@ -122,7 +122,7 @@ function openRegexHelpModal() {
   content += `<li><strong>a.a</strong> - matches any character to [<b>.</b>] (e.g., "<b>A</b>n<b>A</b>", "l<b>A</b>v<b>A</b>")</li>`;
   content += `<li><strong>[aeiou]{3}</strong> - finds words with 3 vowels in a row</li>`;
   content += `</ul>`;
-  content += `<p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-subtle);">Tip: <strong>@defined</strong> can also be used to list all words that have definitions.</p>`;
+  content += `<p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-subtle);">Tip: <strong>@def</strong> can also be used to list all words that have definitions, and @def:[part-of-speech] to filter by part of speech.</p>`;
 
   modalBody.innerHTML = content;
   modal.classList.remove('hidden');

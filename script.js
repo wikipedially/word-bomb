@@ -328,7 +328,7 @@ function openModal(word) {
     content += `</div>`;
 
     if (index < entries.length - 1) {
-      content += `<hr style="border-color: #333; margin: 1rem 0;">`;
+      content += `<hr style="border-top: 1px dotted #333; margin: 1rem 0;">`;
     }
   });
 

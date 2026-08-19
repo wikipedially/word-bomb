@@ -5,20 +5,43 @@
   "A": [],
   "A-OK": [],
   "AA": [],
-  "AAH": [],
-  "AAHED": [],
+  "AAH": [
+    {
+      "pos": "verb",
+      "def": "To make the sound 'aah'."
+    },
+    {
+      "pos": "interjection",
+      "def": "An exclamation used to express pleasure, relief, or satisfaction."
+    }
+  ],
+  "AAHED": [
+    {
+      "pos": "verb",
+      "def": "Past tense form of aah."
+    }
+  ],
   "AAHING": [
     {
       "pos": "verb",
-      "def": "Present-participle form of aah, describing someone currently making the 'aah' sound."
+      "def": "Present participle form of aah."
     }
   ],
-  "AAHS": [],
+  "AAHS": [
+    {
+      "pos": "noun, pl.",
+      "def": "Plural form of aah."
+    },
+    {
+      "pos": "verb",
+      "def": "Third person singular present form of aah."
+    }
+  ],
   "AAL": [],
   "AALII": [
     {
       "pos": "noun",
-      "def": "Hawaiian name for Dodonaea viscosa, known as hopbush or broadleaf hopbush in English.\n\nA tough, bushy shrub or small tree found in warm parts of the world that has sticky leaves and colorful, papery seed pods."
+      "def": "A tough, bushy shrub or small tree found in warm parts of the world that has sticky leaves and colorful, papery seed pods.\nHawaiian name for Dodonaea viscosa, known as hopbush or broadleaf hopbush in English."
     }
   ],
   "AALIIS": [

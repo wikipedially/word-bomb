@@ -167031,12 +167031,14 @@
   "OLOLIUQUI": [
     {
       "pos": "noun",
+            "pron": "oh-loh-lee-OO-kee",
       "def": "A tropical morning glory vine native to Mexico and Central America, whose small, brown, oval seeds have strong psychedelic effects.\n\nFrom Nahuatl 'ololiuhqui', referring to the small, round seeds of the morning glory, not the plant itself. The plant is called 'coaxihuitl' in Nahuatl."
     }
   ],
   "OLOLIUQUIS": [
     {
       "pos": "noun, pl.",
+            "pron": "oh-loh-lee-OO-keez",
       "def": "Plural form of ololiuqui."
     }
   ],
@@ -167045,10 +167047,34 @@
   "OLPAE": [],
   "OLPE": [],
   "OLPES": [],
-  "OLYCOOK": [],
-  "OLYCOOKS": [],
-  "OLYKOEK": [],
-  "OLYKOEKS": [],
+  "OLYCOOK": [
+    {
+      "pos": "noun",
+      "pron":"OH-lee-kook",
+      "def": "Alternative historical spelling of 'olykoek'."
+    }
+  ],
+  "OLYCOOKS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "OH-lee-kooks",
+      "def": "Plural form of olycook."
+    }
+  ],
+  "OLYKOEK": [
+    {
+      "pos": "noun",
+      "pron": "OH-lee-kook",
+      "def": "A ball of sweet dough fried in oil or lard, an ancestor of the modern doughnut.\n\nLit. 'oil cake', from Dutch 'olie' (oil) and koek (cake)."
+    }
+  ],
+  "OLYKOEKS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "OH-lee-kooks",
+      "def": "Plural form of olykoek."
+    }
+  ],
   "OLYMPIAD": [],
   "OLYMPIADS": [],
   "OLYMPIC": [],

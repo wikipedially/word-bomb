@@ -17733,8 +17733,20 @@
   "BALADINS": [],
   "BALAFON": [],
   "BALAFONS": [],
-  "BALALAIKA": [],
-  "BALALAIKAS": [],
+  "BALALAIKA": [
+    {
+      "pos": "noun",
+      "pron": "ba-la-LAYK-uh",
+      "def": "A Russian lute-like string instrument with a triangular body and three strings."
+    }
+  ],
+  "BALALAIKAS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "ba-la-LAYK-uhz",
+      "def": "Plural form of the noun 'balalaika'."
+    }
+  ],
   "BALANCE": [],
   "BALANCEABLE": [],
   "BALANCED": [],
@@ -147777,9 +147789,27 @@
   "MESDAMES": [],
   "MESDEMOISELLES": [],
   "MESE": [],
-  "MESEEMED": [],
-  "MESEEMETH": [],
-  "MESEEMS": [],
+  "MESEEMED": [
+    {
+      "pos": "verb",
+      "pron": "mee-SEEMD",
+      "def": "Past tense form of meseems."
+    }
+  ],
+  "MESEEMETH": [
+    {
+      "pos": "verb",
+      "pron": "mee-SEEM-eth",
+      "def": "Archaic form of 'it seems to me' or 'I think'."
+    }
+  ],
+  "MESEEMS": [
+    {
+      "pos": "verb",
+      "pron": "mee-SEEMZ",
+      "def": "Archaic contraction of meseemeth."
+    }
+  ],
   "MESEL": [],
   "MESELED": [],
   "MESELS": [],
@@ -148541,9 +148571,27 @@
   "METHENAMINES": [],
   "METHICILLIN": [],
   "METHICILLINS": [],
-  "METHINK": [],
-  "METHINKETH": [],
-  "METHINKS": [],
+  "METHINK": [
+    {
+      "pos": "verb",
+      "pron": "mee-THINK",
+      "def": "Archaic form of 'it seems to me' or 'I think'."
+    }
+  ],
+  "METHINKETH": [
+    {
+      "pos": "verb",
+      "pron": "mee-THINK-eth",
+      "def": "Archaic form of 'it seems to me' or 'I think'."
+    }
+  ],
+  "METHINKS": [
+    {
+      "pos": "verb",
+      "pron": "mee-THINKS",
+      "def": "Archaic form of 'it seems to me' or 'I think'."
+    }
+  ],
   "METHIONINE": [],
   "METHIONINES": [],
   "METHO": [],
@@ -148586,7 +148634,13 @@
   "METHOS": [],
   "METHOTREXATE": [],
   "METHOTREXATES": [],
-  "METHOUGHT": [],
+  "METHOUGHT": [
+    {
+      "pos": "verb",
+      "pron": "mee-THOT",
+      "def": "Past tense form of methinks."
+    }
+  ],
   "METHOXIDE": [],
   "METHOXIDES": [],
   "METHOXIES": [],
@@ -261784,18 +261838,90 @@
   "TRYSTING": [],
   "TRYSTS": [],
   "TRYWORKS": [],
-  "TSADDIK": [],
-  "TSADDIKIM": [],
-  "TSADDIKS": [],
-  "TSADDIQ": [],
-  "TSADDIQIM": [],
-  "TSADDIQS": [],
-  "TSADE": [],
-  "TSADES": [],
-  "TSADI": [],
-  "TSADIK": [],
-  "TSADIKS": [],
-  "TSADIS": [],
+  "TSADDIK": [
+    {
+      "pos": "noun",
+      "pron": "TSA-dik",
+      "def": "Alternative form of tzaddik."
+    }
+  ],
+  "TSADDIKIM": [
+    {
+      "pos": "noun, pl. (HEB)",
+      "pron": "TSA-dik-im",
+      "def": "Plural form of tsaddik."
+    }
+  ],
+  "TSADDIKS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "TSA-diks",
+      "def": "Plural form of tsaddik."
+    }
+  ],
+  "TSADDIQ": [
+    {
+      "pos": "noun",
+      "pron": "TSA-dik",
+      "def": "Alternative form of tzaddik."
+    }
+  ],
+  "TSADDIQIM": [
+    {
+      "pos": "noun, pl. (HEB)",
+      "pron": "TSA-dik-im",
+      "def": "Plural form of tsaddiq."
+    }
+  ],
+  "TSADDIQS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "TSA-diks",
+      "def": "Plural form of tsaddiq."
+    }
+  ],
+  "TSADE": [
+    {
+      "pos": "noun",
+      "pron": "TSA-dee",
+      "def": "The eighteenth letter of the Hebrew alphabet."
+    }
+  ],
+  "TSADES": [
+    {
+      "pos": "noun, pl.",
+      "pron": "TSA-deez",
+      "def": "Plural form of tsade."
+    }
+  ],
+  "TSADI": [
+    {
+      "pos": "noun",
+      "pron": "TSA-dee",
+      "def": "Alternative form of tsade."
+    }
+  ],
+  "TSADIK": [
+    {
+      "pos": "noun",
+      "pron": "TSA-dik",
+      "def": "Alternative form of tzaddik."
+    }
+  ],
+  "TSADIKS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "TSA-diks",
+      "def": "Plural form of tsadik."
+    }
+  ],
+  "TSADIS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "TSA-deez",
+      "def": "Plural form of tsadi."
+    }
+  ],
   "TSAMBA": [],
   "TSAMBAS": [],
   "TSANTSA": [],
@@ -263513,16 +263639,76 @@
   "TYTHED": [],
   "TYTHES": [],
   "TYTHING": [],
-  "TZADDI": [],
-  "TZADDIK": [],
-  "TZADDIKIM": [],
-  "TZADDIKS": [],
-  "TZADDIQ": [],
-  "TZADDIQIM": [],
-  "TZADDIQS": [],
-  "TZADDIS": [],
-  "TZADIK": [],
-  "TZADIKS": [],
+  "TZADDI": [
+    {
+      "pos": "noun",
+      "pron": "TSA-dee",
+      "def": "Alternative form of tsade."
+    }
+  ],
+  "TZADDIK": [
+    {
+      "pos": "noun",
+      "pron": "TSA-dik",
+      "def": "A Jewish title for a righteous and pious person, often a leader."
+    }
+  ],
+  "TZADDIKIM": [
+    {
+      "pos": "noun, pl. (HEB)",
+      "pron": "TSA-dik-im",
+      "def": "Plural form of tzaddik."
+    }
+  ],
+  "TZADDIKS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "TSA-diks",
+      "def": "Plural form of tzaddik."
+    }
+  ],
+  "TZADDIQ": [
+    {
+      "pos": "noun",
+      "pron": "TSA-dik",
+      "def": "Alternative form of tzaddik."
+    }
+  ],
+  "TZADDIQIM": [
+    {
+      "pos": "noun, pl. (HEB)",
+      "pron": "TSA-dik-im",
+      "def": "Plural form of tzaddiq."
+    }
+  ],
+  "TZADDIQS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "TSA-diks",
+      "def": "Plural form of tzaddiq."
+    }
+  ],
+  "TZADDIS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "TSA-deez",
+      "def": "Plural form of tzaddi."
+    }
+  ],
+  "TZADIK": [
+    {
+      "pos": "noun",
+      "pron": "TSA-dik",
+      "def": "Alternative form of tzaddik."
+    }
+  ],
+  "TZADIKS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "TSA-diks",
+      "def": "Plural form of tzadik."
+    }
+  ],
   "TZAR": [],
   "TZARDOM": [],
   "TZARDOMS": [],
@@ -280340,14 +280526,14 @@
   ],
   "WELTANSCHAUUNGEN": [
     {
-      "pos": "noun, pl. (DE)",
-      "def": "Plural form of weltanschauung"
+      "pos": "noun, pl. (DEU)",
+      "def": "Plural form of weltanschauung."
     }
   ],
   "WELTANSCHAUUNGS": [
     {
       "pos": "noun, pl.",
-      "def": "Plural form of weltanschauung"
+      "def": "Plural form of weltanschauung."
     }
   ],
   "WELTED": [],
@@ -283692,7 +283878,13 @@
   "WOULDEST": [],
   "WOULDN'T": [],
   "WOULDS": [],
-  "WOULDST": [],
+  "WOULDST": [
+    {
+      "pos": "verb",
+      "pron": "wudst",
+      "def": "Archaic form of the verb 'would', used when speaking to one person (i.e. 'Thou wouldst')."
+    }
+  ],
   "WOUND": [],
   "WOUNDABLE": [],
   "WOUNDED": [],
@@ -285079,7 +285271,18 @@
   "YITTEN": [],
   "YLEM": [],
   "YLEMS": [],
-  "YLIKE": [],
+  "YLIKE": [
+    {
+      "pos": "adjective",
+      "pron": "ee-LAYK",
+      "def": "Archaic form of the adjective 'alike'."
+    },
+    {
+      "pos": "adverb",
+      "pron": "ee-LAYK",
+      "def": "Archaic form of the adverb 'alike'."
+    }
+  ],
   "YLKE": [],
   "YLKES": [],
   "YMOLT": [],
@@ -285499,11 +285702,41 @@
   "ZACATONS": [],
   "ZACK": [],
   "ZACKS": [],
-  "ZADDICK": [],
-  "ZADDICKS": [],
-  "ZADDIK": [],
-  "ZADDIKIM": [],
-  "ZADDIKS": [],
+  "ZADDICK": [
+    {
+      "pos": "noun",
+      "pron": "ZA-dik",
+      "def": "Alternative form of tzaddik."
+    }
+  ],
+  "ZADDICKS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "ZA-diks",
+      "def": "Plural form of zaddick."
+    }
+  ],
+  "ZADDIK": [
+    {
+      "pos": "noun",
+      "pron": "ZA-dik",
+      "def": "Alternative form of tzaddik."
+    }
+  ],
+  "ZADDIKIM": [
+    {
+      "pos": "noun, pl. (HEB)",
+      "pron": "ZA-dik-im",
+      "def": "Plural form of zaddik."
+    }
+  ],
+  "ZADDIKS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "ZA-diks",
+      "def": "Plural form of zaddik."
+    }
+  ],
   "ZAFFAR": [],
   "ZAFFARS": [],
   "ZAFFER": [],

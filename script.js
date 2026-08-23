@@ -166,7 +166,7 @@ function searchWords(query) {
         posQuery = query.slice(5).trim().toLowerCase();
       }
 
-      const posRegex = new RegExp(`\\b${posQuery}\\b`, 'i');
+      const posRegex = new RegExp(`^${posQuery}`, 'i');
 
       // search all entries so that words with POS tag, WITHOUT definitions, still appear in results
       let posFilteredWords = words.filter((word) => {

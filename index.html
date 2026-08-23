@@ -17,6 +17,7 @@
       </header>
       <div class="search-controls">
         <div class="search-bar-wrapper">
+          <div id="search-tokens-container"></div>
           <input type="text" id="search-input" placeholder="Type prompt..." autocomplete="off"/>
           <div class="search-actions">
             <button class="sort-btn" id="sort-type-btn" title="Toggle Sort Type (A-Z / Length)">
@@ -27,6 +28,7 @@
             </button>
           </div>
         </div>
+        <div id="autocomplete-popup" class="hidden"></div>
       </div>
       <div id="results-container">
         <div class="placeholder-wrapper">

@@ -1,4 +1,6 @@
 let dictionaryData = {};
+let posIndex = {}; // pre-indexed part-of-speech arrays
+let definedWordsCache = []; // pre-cached defined words
 let currentMatchedWords = [];
 let displayedCount = 0;
 const BATCH_SIZE = 200;
@@ -6,25 +8,71 @@ const BATCH_SIZE = 200;
 let sortType = 'alpha'; // 'alpha' or 'length'
 let sortDirection = 'asc'; // 'asc' or 'desc'
 
+let activePosToken = null;
+let searchDebounceTimer = null;
+
+const ENGLISH_POS = ['noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'determiner', 'article'];
+
 // fetch dict.json when page is loaded
 async function loadDictionary() {
   try {
     const response = await fetch('dict.json');
     dictionaryData = await response.json();
     console.log(
-      `Loaded ${Object.keys(dictionaryData).length} words into memory.`
+      `Loaded ${Object.keys(dictionaryData).length} words into memory. Indexing parts of speech...`
     );
+
+    const startTime = performance.now();
+    buildIndexes();
+    const endTime = performance.now();
+    console.log(`Indexed parts of speech in ${(endTime - startTime).toFixed(2)}ms`)
   } catch (error) {
     console.error('Failed to load dictionary:', error);
-    document.getElementById(
-      'results-container'
-    ).innerHTML = `<p class="placeholder-text" style="color: #ff6b6b;">Error loading dict.json. Check console.</p>`;
+    document.getElementById('results-container').innerHTML = `<p class="placeholder-text" style="color: #ff6b6b;">Error loading dict.json. Check console.</p>`;
+  }
+}
+
+function buildIndexes() {
+  definedWordsCache = [];
+  posIndex = {};
+
+  for (const word in dictionaryData) {
+    const entries = dictionaryData[word];
+    if (!entries || !Array.isArray(entries)) continue;
+
+    let hasDef = false;
+    let posSeen = new Set();
+
+    entries.forEach((entry) => {
+      // check if definition exists
+      if (entry.def) {
+        if (Array.isArray(entry.def) && entry.def.length > 0) hasDef = true;
+        if (typeof entry.def === 'string' && entry.def.trim() !== '') hasDef = true
+      }
+
+      if (entry.pos) {
+        const posLower = entry.pos.toLowerCase().trim();
+        if (!posSeen.has(posLower)) {
+          posSeen.add(posLower);
+          if (!posIndex[posLower]) {
+            posIndex[posLower] = [];
+          }
+          posIndex[posLower].push(word);
+        }
+      }
+    });
+
+    if (hasDef) {
+      definedWordsCache.push(word);
+    }
   }
 }
 
 loadDictionary();
 
 const searchInput = document.getElementById('search-input');
+const searchTokensContainer = document.getElementById('search-tokens-container');
+const autocompletePopup = document.getElementById('autocomplete-popup')
 const resultsContainer = document.getElementById('results-container');
 const modal = document.getElementById('modal');
 const modalBody = document.getElementById('modal-body');
@@ -39,17 +87,125 @@ renderPlaceholder();
 
 // user input text box
 searchInput.addEventListener('input', (e) => {
-  const query = e.target.value.trim();
+  const query = e.target.value;
 
-  if (query === '') {
+  if (query.toLowerCase().startsWith('@def:') && !activePosToken) {
+    const subQuery = query.slice(5).trim().toLowerCase();
+    const exactMatch = ENGLISH_POS.find((pos) => pos === subQuery);
+    if (exactMatch) {
+      setPosToken(exactMatch);
+      return;
+    }
+    showAutocompletePopup(subQuery);
+  } else {
+    hideAutocompletePopup();
+  }
+
+  // debounce to prevent lag when typing fast
+  clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(() => {
+    evaluateSearch();
+  }, 150);
+});
+
+// part-of-speech token within search box
+searchInput.addEventListener('keydown', (e) => {
+  if (e.key === ' ' && !activePosToken) {
+    const query = searchInput.value.trim().toLowerCase();
+    if (query.startsWith('@def:')) {
+      const typedPos = query.slice(5).trim();
+      const exactMatch = ENGLISH_POS.find((pos) => pos === typedPos);
+      if (exactMatch) {
+        e.preventDefault();
+        setPosToken(exactMatch);
+        return;
+      }
+    }
+  }
+
+  if (e.key === 'Backspace' && searchInput.value === '' && activePosToken) {
+    e.preventDefault();
+    removePosToken();
+  }
+});
+
+function showAutocompletePopup(subQuery) {
+  const matches = ENGLISH_POS.filter((pos) => pos.includes(subQuery));
+  if (matches.length === 0) {
+    hideAutocompletePopup();
+    return;
+  }
+
+  let html = '';
+  matches.forEach((pos) => {
+    html += `<button class="autocomplete-pill" data-pos="${pos}">${pos}</button>`;
+  });
+  autocompletePopup.innerHTML = html;
+  autocompletePopup.classList.remove('hidden');
+  autocompletePopup.querySelectorAll('.autocomplete-pill').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const chosenPos = btn.getAttribute('data-pos');
+      setPosToken(chosenPos);
+    });
+  });
+}
+
+function hideAutocompletePopup() {
+  autocompletePopup.classList.add('hidden');
+  autocompletePopup.innerHTML = '';
+}
+
+function setPosToken(pos) {
+  activePosToken = pos;
+  searchInput.value = '';
+  hideAutocompletePopup();
+  renderTokensUI();
+  evaluateSearch();
+  searchInput.focus();
+}
+
+function removePosToken() {
+  activePosToken = null;
+  renderTokensUI();
+  evaluateSearch();
+  searchInput.focus();
+}
+
+function renderTokensUI() {
+  if (activePosToken) {
+    searchTokensContainer.innerHTML = `
+      <div class="search-token-pill">
+        <span>@def:${activePosToken}</span>
+        <button class="search-token-remove" id="remove-token-btn">&times;</button>
+      </div>
+    `;
+    document.getElementById('remove-token-btn').addEventListener('click', () => {
+      removePosToken();
+    });
+    searchInput.placeholder = '';
+  } else {
+    searchTokensContainer.innerHTML = '';
+    searchInput.placeholder = 'Type prompt...';
+  }
+}
+
+function evaluateSearch() {
+  const rawInput = searchInput.value.trim();
+  let builtQuery = '';
+  if (activePosToken) {
+    builtQuery = `@def:${activePosToken} ${rawInput}`;
+  } else {
+    builtQuery = rawInput;
+  }
+
+  if (builtQuery === '') {
     renderPlaceholder();
     currentMatchedWords = [];
     displayedCount = 0;
     return;
   }
-
-  searchWords(query);
-});
+  searchWords(builtQuery);
+}
 
 // sort type button listener
 sortTypeBtn.addEventListener('click', () => {
@@ -58,10 +214,10 @@ sortTypeBtn.addEventListener('click', () => {
   // update icon
   if (sortType === 'alpha') {
     sortTypeIcon.className = 'fa-solid fa-arrow-down-a-z';
-    sortTypeBtn.title = 'Current: Alphabetical (Click to switch to Length)';
+    sortTypeBtn.title = 'alphabetical';
   } else {
     sortTypeIcon.className = 'fa-solid fa-arrow-down-1-9';
-    sortTypeBtn.title = 'Current: Length (Click to switch to Alphabetical)';
+    sortTypeBtn.title = 'length';
   }
 
   if (currentMatchedWords.length > 0) {
@@ -76,10 +232,10 @@ sortDirBtn.addEventListener('click', () => {
   // update icon
   if (sortDirection === 'asc') {
     sortDirIcon.className = 'fa-solid fa-arrow-up';
-    sortDirBtn.title = 'Current: Ascending (Click to switch to Descending)';
+    sortDirBtn.title = 'ascending';
   } else {
     sortDirIcon.className = 'fa-solid fa-arrow-down';
-    sortDirBtn.title = 'Current: Descending (Click to switch to Ascending)';
+    sortDirBtn.title = 'descending';
   }
 
   if (currentMatchedWords.length > 0) {
@@ -143,17 +299,10 @@ function wordHasRealDefinition(word) {
 
 // search filter logic
 function searchWords(query) {
-  const words = Object.keys(dictionaryData);
   let matchedWords = [];
-
   const queryLower = query.toLowerCase();
 
-  // check if query uses @def command
   if (queryLower.startsWith('@def')) {
-    // all words that are defined
-    let definedWords = words.filter((word) => wordHasRealDefinition(word));
-
-    // check if part-of-speech filter is included
     if (queryLower.startsWith('@def:')) {
       const spaceIndex = query.indexOf(' ');
       let posQuery = '';
@@ -166,54 +315,46 @@ function searchWords(query) {
         posQuery = query.slice(5).trim().toLowerCase();
       }
 
-      const posRegex = new RegExp(`^${posQuery}`, 'i');
+      let basePool = [];
+      for (const posKey in posIndex) {
+        if (posKey.startsWith(posQuery)) {
+          basePool.push(...posIndex[posKey]);
+        }
+      }
+      basePool = [...new Set(basePool)];
 
-      // search all entries so that words with POS tag, WITHOUT definitions, still appear in results
-      let posFilteredWords = words.filter((word) => {
-        const entries = dictionaryData[word];
-        if (!entries || !Array.isArray(entries)) return false;
-        return entries.some((entry) => entry.pos && posRegex.test(entry.pos));
-      });
-
-      // if there is extra text after POS tag (regex query), filter further
       if (subQuery !== '') {
         try {
           const regex = new RegExp(subQuery, 'i');
-          matchedWords = posFilteredWords.filter((word) => regex.test(word));
+          matchedWords = basePool.filter((word) => regex.test(word));
         } catch (err) {
-          matchedWords = posFilteredWords.filter((word) => word.toLowerCase().includes(subQuery.toLowerCase())
-          );
+          matchedWords = basePool.filter((word) => word.toLowerCase().includes(subQuery.toLowerCase()));
         }
       } else {
-        matchedWords = posFilteredWords;
+        matchedWords = basePool;
       }
     } else {
-      // normal @def query logic
       const subQuery = query.slice(4).trim();
-
       if (subQuery === '') {
-        matchedWords = definedWords;
+        matchedWords = definedWordsCache;
       } else {
         try {
           const regex = new RegExp(subQuery, 'i');
-          matchedWords = definedWords.filter((word) => regex.test(word));
+          matchedWords = definedWordsCache.filter((word) => regex.test(word));
         } catch (err) {
-          matchedWords = definedWords.filter((word) => word.toLowerCase().includes(subQuery.toLowerCase())
-          );
+          matchedWords = definedWordsCache.filter((word) => word.toLowerCase().includes(subQuery.toLowerCase()));
         }
       }
     }
   } else {
-    // normal search logic without @def
+    const words = Object.keys(dictionaryData);
     try {
       const regex = new RegExp(query, 'i');
       matchedWords = words.filter((word) => regex.test(word));
     } catch (err) {
-      matchedWords = words.filter((word) => word.toLowerCase().includes(query.toLowerCase())
-      );
+      matchedWords = words.filter((word) => word.toLowerCase().includes(query.toLowerCase()));
     }
   }
-
   currentMatchedWords = matchedWords;
   applySortingAndRender();
 }

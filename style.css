@@ -89,6 +89,7 @@ main {
 /* search controls */
 .search-controls {
   margin-bottom: 2.5rem;
+  position: relative;
 }
 
 .search-bar-wrapper {
@@ -104,6 +105,50 @@ main {
 .search-bar-wrapper:focus-within {
   border-color: var(--border-focus);
   box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.1);
+}
+
+#search-tokens-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.search-token-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.6rem;
+  background-color: var(--bg-tag);
+  border: 1px solid rgba(255, 133, 133, 0.3);
+  border-radius: var(--radius-pill);
+  color: var(--text-tag);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.search-token-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-top: 2px;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  background: none;
+  border: none;
+  color: var(--text-tag);
+  font-size: 1.1rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+  cursor: pointer;
+}
+
+.search-token-remove:hover {
+  opacity: 1;
 }
 
 #search-input {
@@ -129,6 +174,47 @@ main {
   gap: 0.35rem;
   flex-shrink: 0;
   margin-left: 0.5rem;
+}
+
+/* autocomplete popup */
+.autocomplete-popup {
+  display: flex;
+  flex-wrap: wrap;
+  position: absolute;
+  padding: 0.75rem;
+  justify-content: center;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  gap: 0.4rem;
+  background-color: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.autocomplete-popup {
+  display: none;
+}
+
+.autocomplete-pill {
+  padding: 0.4rem 0.85rem;
+  background-color: var(--bg-pill);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.autocomplete-pill:hover, .autocomplete-pill.selected {
+  background-color: var(--bg-pill-hover);
+  border-color: var(--border-focus);
+  color: var(--text-tag);
+  transform: translateY(-1px);
 }
 
 /* sort buttons */

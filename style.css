@@ -95,10 +95,12 @@ main {
 .search-bar-wrapper {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   background-color: var(--bg-surface-alt);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-pill);
-  padding: 0.3rem 0.3rem 0.3rem 1.25rem;
+  padding: 0.3rem 0.3rem 0.3rem 1rem;
   transition: all 0.2s ease;
 }
 

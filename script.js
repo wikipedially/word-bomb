@@ -478,7 +478,7 @@ function openRegexHelpModal() {
   content += `<li><strong>a.a</strong> - wildcard matching [<b>.</b>]</li>`;
   content += `<li><strong>[aeiou]{3}</strong> - 3 vowels in a row</li>`;
   content += `</ul>`;
-  content += `<p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-subtle);">Tip: Use <strong>@def</strong> for definitions, of <strong>@sn:[number]</strong> to search via number of solutions for letter chunk.</p>`;
+  content += `<p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-subtle);">Tip: Use <strong>@def</strong> for definitions, of <strong>@sn:[number]</strong> to search via number of solutions for letter chunk. (Make sure to press SPACE after using an @ command.)</p>`;
 
   modalBody.innerHTML = content;
   modal.classList.remove('hidden');

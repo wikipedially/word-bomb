@@ -3688,7 +3688,13 @@
   "AFFICIONADOS": [],
   "AFFIDAVIT": [],
   "AFFIDAVITS": [],
-  "AFFIED": [],
+  "AFFIED": [
+    {
+      "pos": "verb",
+      "pron": "uh-FAYD",
+      "def": "Already had been betrothed, bound by a promise.\n\nPast-tense and past-participle form of 'affy'."
+    }
+  ],
   "AFFIES": [],
   "AFFILIABLE": [],
   "AFFILIATE": [],
@@ -3849,9 +3855,27 @@
   "AFFRONTS": [],
   "AFFUSION": [],
   "AFFUSIONS": [],
-  "AFFY": [],
-  "AFFYDE": [],
-  "AFFYING": [],
+  "AFFY": [
+    {
+      "pos": "verb",
+      "pron": "uh-FAY",
+      "def": "Archaic word meaning to betroth, to promise , or to have faith in someone."
+    }
+  ],
+  "AFFYDE": [
+    {
+      "pos": "verb",
+      "pron": "uh-FAYD",
+      "def": "Alternative historical spelling of 'affied'."
+    }
+  ],
+  "AFFYING": [
+    {
+      "pos": "verb",
+      "pron": "uh-FAY-ing",
+      "def": "Currently being betrothed or pledging oneself.\n\nPresent participle form of 'affy'."
+    }
+  ],
   "AFGHAN": [],
   "AFGHANI": [],
   "AFGHANIS": [],
@@ -158112,7 +158136,11 @@
   "MYRMECOPHILE": [],
   "MYRMECOPHILES": [],
   "MYRMECOPHILIES": [],
-  "MYRMECOPHILOUS": [],
+  "MYRMECOPHILOUS": [
+    {
+      "pos": "adjective"
+    }
+  ],
   "MYRMECOPHILY": [],
   "MYRMIDON": [],
   "MYRMIDONES": [],

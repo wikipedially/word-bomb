@@ -1,34 +1,49 @@
 let dictionaryData = {};
-let posIndex = {}; // pre-indexed part-of-speech arrays
-let definedWordsCache = []; // pre-cached defined words
+let chunkCountData = {};
+let posIndex = {};
+let definedWordsCache = [];
 let currentMatchedWords = [];
+let currentSnPrompts = [];
 let displayedCount = 0;
 const BATCH_SIZE = 200;
 
-let sortType = 'alpha'; // 'alpha' or 'length'
-let sortDirection = 'asc'; // 'asc' or 'desc'
-
+let sortType = 'alpha';
+let sortDirection = 'asc';
 let activePosToken = null;
+let activeSnToken = null;
 let searchDebounceTimer = null;
 
 const ENGLISH_POS = ['noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'determiner', 'article'];
 
-// fetch dict.json when page is loaded
-async function loadDictionary() {
-  try {
-    const response = await fetch('dict.json');
-    dictionaryData = await response.json();
-    console.log(
-      `Loaded ${Object.keys(dictionaryData).length} words into memory. Indexing parts of speech...`
-    );
+// dom elements
+const searchInput = document.getElementById('search-input');
+const searchTokensContainer = document.getElementById('search-tokens-container');
+const resultsContainer = document.getElementById('results-container');
+const modal = document.getElementById('modal');
+const modalBody = document.getElementById('modal-body');
+const closeModalBtn = document.getElementById('close-modal');
+const sortTypeBtn = document.getElementById('sort-type-btn');
+const sortTypeIcon = document.getElementById('sort-type-icon');
+const sortDirBtn = document.getElementById('sort-dir-btn');
+const sortDirIcon = document.getElementById('sort-dir-icon');
 
-    const startTime = performance.now();
+// load dictionary data from JSON file
+async function loadData() {
+  try {
+    const dictResponse = await fetch('dict.json');
+    dictionaryData = await dictResponse.json();
     buildIndexes();
-    const endTime = performance.now();
-    console.log(`Indexed parts of speech in ${(endTime - startTime).toFixed(2)}ms`)
+    evaluateSearch();
   } catch (error) {
     console.error('Failed to load dictionary:', error);
-    document.getElementById('results-container').innerHTML = `<p class="placeholder-text" style="color: #ff6b6b;">Error loading dict.json. Check console.</p>`;
+    resultsContainer.innerHTML = `<p class="placeholder-text" style="color: #ff6b6b;">Error loading dict.json.</p>`;
+  }
+
+  try {
+    const chunkResponse = await fetch('chunkCountList.json');
+    chunkCountData = await chunkResponse.json();
+  } catch (error) {
+    console.warn('Failed to load chunkCountList.json:', error);
   }
 }
 
@@ -44,121 +59,143 @@ function buildIndexes() {
     let posSeen = new Set();
 
     entries.forEach((entry) => {
-      // check if definition exists
       if (entry.def) {
         if (Array.isArray(entry.def) && entry.def.length > 0) hasDef = true;
-        if (typeof entry.def === 'string' && entry.def.trim() !== '') hasDef = true
+        if (typeof entry.def === 'string' && entry.def.trim() !== '') hasDef = true;
       }
 
       if (entry.pos) {
         const posLower = entry.pos.toLowerCase().trim();
         if (!posSeen.has(posLower)) {
           posSeen.add(posLower);
-          if (!posIndex[posLower]) {
-            posIndex[posLower] = [];
-          }
+          if (!posIndex[posLower]) posIndex[posLower] = [];
           posIndex[posLower].push(word);
         }
       }
     });
 
-    if (hasDef) {
-      definedWordsCache.push(word);
-    }
+    if (hasDef) definedWordsCache.push(word);
   }
 }
 
-loadDictionary();
-
-const searchInput = document.getElementById('search-input');
-const searchTokensContainer = document.getElementById('search-tokens-container');
-const autocompletePopup = document.getElementById('autocomplete-popup')
-const resultsContainer = document.getElementById('results-container');
-const modal = document.getElementById('modal');
-const modalBody = document.getElementById('modal-body');
-const closeModalBtn = document.getElementById('close-modal');
-const sortTypeBtn = document.getElementById('sort-type-btn');
-const sortTypeIcon = document.getElementById('sort-type-icon');
-const sortDirBtn = document.getElementById('sort-dir-btn');
-const sortDirIcon = document.getElementById('sort-dir-icon');
-
-// render initial placeholder section on load
+loadData();
 renderPlaceholder();
 
-// user input text box
+// event listeners
 searchInput.addEventListener('input', (e) => {
   const query = e.target.value;
+  const queryLower = query.toLowerCase();
 
-  if (query.toLowerCase().startsWith('@def:') && !activePosToken) {
+  if (queryLower.startsWith('@def:') && !activePosToken) {
     const subQuery = query.slice(5).trim().toLowerCase();
     const exactMatch = ENGLISH_POS.find((pos) => pos === subQuery);
     if (exactMatch) {
-      setPosToken(exactMatch);
+      setDefToken(exactMatch);
       return;
     }
-    showAutocompletePopup(subQuery);
-  } else {
-    hideAutocompletePopup();
   }
 
-  // debounce to prevent lag when typing fast
   clearTimeout(searchDebounceTimer);
-  searchDebounceTimer = setTimeout(() => {
-    evaluateSearch();
-  }, 150);
+  searchDebounceTimer = setTimeout(evaluateSearch, 300);
 });
 
-// part-of-speech token within search box
 searchInput.addEventListener('keydown', (e) => {
-  if (e.key === ' ' && !activePosToken) {
-    const query = searchInput.value.trim().toLowerCase();
-    if (query.startsWith('@def:')) {
-      const typedPos = query.slice(5).trim();
-      const exactMatch = ENGLISH_POS.find((pos) => pos === typedPos);
-      if (exactMatch) {
+  const query = searchInput.value.trim().toLowerCase();
+
+  if (e.key === ' ') {
+    if (query === '@def' && !activePosToken) {
+      e.preventDefault();
+      setDefToken(true);
+      return;
+    }
+    if (query === '@sn' && !activeSnToken) {
+      e.preventDefault();
+      setSnToken(true);
+      return;
+    }
+    if (query.startsWith('@def:') && !activePosToken) {
+      const typedPos = query.slice(5).trim().toLowerCase();
+      const match = ENGLISH_POS.find((pos) => pos.startsWith(typedPos));
+      if (match) {
         e.preventDefault();
-        setPosToken(exactMatch);
+        setDefToken();
+        return;
+      }
+    } else if (query.startsWith('@sn:') && !activeSnToken) {
+      const typedNum = query.slice(4).trim();
+      if (typedNum !== '') {
+        e.preventDefault();
+        setSnToken(typedNum);
         return;
       }
     }
   }
 
-  if (e.key === 'Backspace' && searchInput.value === '' && activePosToken) {
+  if (e.key === 'Enter') {
+    if (query.startsWith('@def:') && !activePosToken) {
+      const typedPos = query.slice(5).trim().toLowerCase();
+      const match = ENGLISH_POS.find((pos) => pos.startsWith(typedPos));
+      if (match) {
+        e.preventDefault();
+        setDefToken(match);
+        return;
+      }
+    } else if (query.startsWith('@sn:') && !activeSnToken) {
+      const typedNum = query.slice(4).trim();
+      if (typedNum !== '') {
+        e.preventDefault();
+        setSnToken(typedNum);
+        return;
+      }
+    }
+  }
+
+  if (e.key === 'Backspace' && searchInput.value === '') {
     e.preventDefault();
-    removePosToken();
+    if (activePosToken && activeSnToken) removePosToken();
+    else removeTokens();
   }
 });
 
-function showAutocompletePopup(subQuery) {
-  const matches = ENGLISH_POS.filter((pos) => pos.includes(subQuery));
-  if (matches.length === 0) {
-    hideAutocompletePopup();
-    return;
+sortTypeBtn.addEventListener('click', () => {
+  sortType = sortType === 'alpha' ? 'length' : 'alpha';
+  sortTypeIcon.className = sortType === 'alpha' ? 'fa-solid fa-arrow-down-a-z' : 'fa-solid fa-arrow-down-1-9';
+  sortTypeBtn.title = sortType;
+  if (currentMatchedWords.length > 0) applySortingAndRender();
+});
+
+sortDirBtn.addEventListener('click', () => {
+  sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+  sortDirIcon.className = sortDirection === 'asc' ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down';
+  sortDirBtn.title = sortDirection;
+  if (currentMatchedWords.length > 0) applySortingAndRender();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && document.activeElement !== searchInput) {
+    e.preventDefault();
+    searchInput.focus();
+    searchInput.select();
   }
+});
 
-  let html = '';
-  matches.forEach((pos) => {
-    html += `<button class="autocomplete-pill" data-pos="${pos}">${pos}</button>`;
-  });
-  autocompletePopup.innerHTML = html;
-  autocompletePopup.classList.remove('hidden');
-  autocompletePopup.querySelectorAll('.autocomplete-pill').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const chosenPos = btn.getAttribute('data-pos');
-      setPosToken(chosenPos);
-    });
-  });
-}
+closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) modal.classList.add('hidden');
+});
 
-function hideAutocompletePopup() {
-  autocompletePopup.classList.add('hidden');
-  autocompletePopup.innerHTML = '';
-}
-
-function setPosToken(pos) {
+// token stuff
+function setDefToken(pos = true) {
   activePosToken = pos;
   searchInput.value = '';
-  hideAutocompletePopup();
+  renderTokensUI();
+  evaluateSearch();
+  searchInput.focus();
+}
+
+function setSnToken(num = true) {
+  activeSnToken = num;
+  searchInput.value = '';
   renderTokensUI();
   evaluateSearch();
   searchInput.focus();
@@ -171,195 +208,181 @@ function removePosToken() {
   searchInput.focus();
 }
 
+function removeSnToken() {
+  activeSnToken = null;
+  renderTokensUI();
+  evaluateSearch();
+  searchInput.focus();
+}
+
+function removeTokens() {
+  activePosToken = null;
+  activeSnToken = null;
+  renderTokensUI();
+  evaluateSearch();
+  searchInput.focus();
+}
+
 function renderTokensUI() {
-  if (activePosToken) {
-    searchTokensContainer.innerHTML = `
-      <div class="search-token-pill">
-        <span>@def:${activePosToken}</span>
-        <button class="search-token-remove" id="remove-token-btn">&times;</button>
-      </div>
-    `;
-    document.getElementById('remove-token-btn').addEventListener('click', () => {
-      removePosToken();
-    });
-    searchInput.placeholder = '';
-  } else {
-    searchTokensContainer.innerHTML = '';
-    searchInput.placeholder = 'Type prompt...';
+  let html = '';
+
+  if (activeSnToken) {
+    const snLabel = activeSnToken === true ? '@sn' : `@sn:${activeSnToken}`;
+    html += `<div class="search-token-pill"><span>${snLabel}</span><button class="search-token-remove" id="remove-sn-btn">&times;</button></div>`;
   }
+
+  if (activePosToken) {
+    const defLabel = activePosToken === true ? '@def' : `@def:${activePosToken}`;
+    html += `<div class="search-token-pill"><span>${defLabel}</span><button class="search-token-remove" id="remove-def-btn">&times;</button></div>`;
+  }
+
+  searchTokensContainer.innerHTML = html;
+
+  const removeSnBtn = document.getElementById('remove-sn-btn');
+  if (removeSnBtn) removeSnBtn.addEventListener('click', removeSnToken);
+
+  const removeDefBtn = document.getElementById('remove-def-btn');
+  if (removeDefBtn) removeDefBtn.addEventListener('click', removePosToken);
+
+  searchInput.placeholder = (activePosToken || activeSnToken) ? '' : 'Type prompt...';
 }
 
+// search function
 function evaluateSearch() {
-  const rawInput = searchInput.value.trim();
-  let builtQuery = '';
-  if (activePosToken) {
-    builtQuery = `@def:${activePosToken} ${rawInput}`;
-  } else {
-    builtQuery = rawInput;
-  }
-
-  if (builtQuery === '') {
-    renderPlaceholder();
-    currentMatchedWords = [];
-    displayedCount = 0;
-    return;
-  }
-  searchWords(builtQuery);
+  searchWords(searchInput.value.trim());
 }
 
-// sort type button listener
-sortTypeBtn.addEventListener('click', () => {
-  sortType = sortType === 'alpha' ? 'length' : 'alpha';
-
-  // update icon
-  if (sortType === 'alpha') {
-    sortTypeIcon.className = 'fa-solid fa-arrow-down-a-z';
-    sortTypeBtn.title = 'alphabetical';
-  } else {
-    sortTypeIcon.className = 'fa-solid fa-arrow-down-1-9';
-    sortTypeBtn.title = 'length';
-  }
-
-  if (currentMatchedWords.length > 0) {
-    applySortingAndRender();
-  }
-});
-
-// sort direction button listener
-sortDirBtn.addEventListener('click', () => {
-  sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-
-  // update icon
-  if (sortDirection === 'asc') {
-    sortDirIcon.className = 'fa-solid fa-arrow-up';
-    sortDirBtn.title = 'ascending';
-  } else {
-    sortDirIcon.className = 'fa-solid fa-arrow-down';
-    sortDirBtn.title = 'descending';
-  }
-
-  if (currentMatchedWords.length > 0) {
-    applySortingAndRender();
-  }
-});
-
-// press '/' to focus search input
-document.addEventListener('keydown', (e) => {
-  if (e.key === '/' && document.activeElement !== searchInput) {
-    e.preventDefault();
-    searchInput.focus();
-    searchInput.select();
-  }
-});
-
-// render default placeholder section with clickable RegEx link
-function renderPlaceholder() {
-  resultsContainer.innerHTML = `
-    <div class="placeholder-wrapper">
-      <p class="placeholder-text">Enter a search query for results.</p>
-      <p class="placeholder-hint">allows <span id="regex-help-link" class="interactive-link">RegEx</span> queries.</p>
-    </div>
-  `;
-
-  const regexHelpLink = document.getElementById('regex-help-link');
-  if (regexHelpLink) {
-    regexHelpLink.addEventListener('click', () => {
-      openRegexHelpModal();
-    });
-  }
-}
-
-function openRegexHelpModal() {
-  let content = `<h2>RegEx Search Guide</h2>`;
-  content += `<p><b>reg</b>ular <b>ex</b>pression can be used for advanced pattern matching in search queries. here are a few examples:</p>`;
-  content += `<ul class="def-list" style="margin-left: 1rem;">`;
-  content += `<li><strong>^a</strong> - finds words starting with "a" (e.g., "<b>A</b>pple")</li>`;
-  content += `<li><strong>a$</strong> - finds word ending with "a" (e.g., "comm<b>A</b>")</li>`;
-  content += `<li><strong>a.a</strong> - matches any character to [<b>.</b>] (e.g., "<b>A</b>n<b>A</b>", "l<b>A</b>v<b>A</b>")</li>`;
-  content += `<li><strong>[aeiou]{3}</strong> - finds words with 3 vowels in a row</li>`;
-  content += `</ul>`;
-  content += `<p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-subtle);">Tip: <strong>@def</strong> can also be used to list all words that have definitions, and @def:[part-of-speech] to filter by part of speech.</p>`;
-
-  modalBody.innerHTML = content;
-  modal.classList.remove('hidden');
-}
-
-
-// checks if a word has a valid definition
-function wordHasRealDefinition(word) {
-  const entries = dictionaryData[word];
-  if (!entries || !Array.isArray(entries)) return false;
-
-  return entries.some((entry) => {
-    if (!entry.def) return false;
-    if (Array.isArray(entry.def)) return entry.def.length > 0;
-    return typeof entry.def === 'string' && entry.def.trim() !== '';
-  });
-}
-
-// search filter logic
 function searchWords(query) {
-  let matchedWords = [];
+  let snPool = null;
+  let defPool = null;
   const queryLower = query.toLowerCase();
+  currentSnPrompts = [];
 
-  if (queryLower.startsWith('@def')) {
-    if (queryLower.startsWith('@def:')) {
-      const spaceIndex = query.indexOf(' ');
-      let posQuery = '';
-      let subQuery = '';
+  let explicitSn = null;
+  if (queryLower.startsWith('@sn:')) {
+    const spaceIdx = query.indexOf(' ');
+    explicitSn = spaceIdx !== -1 ? query.slice(4, spaceIdx).trim() : query.slice(4).trim();
+  }
 
-      if (spaceIndex !== -1) {
-        posQuery = query.slice(5, spaceIndex).trim().toLowerCase();
-        subQuery = query.slice(spaceIndex + 1).trim();
-      } else {
-        posQuery = query.slice(5).trim().toLowerCase();
+  // resolve @sn pool
+  if (activeSnToken || explicitSn) {
+    if (!chunkCountData.counts) {
+      resultsContainer.innerHTML = `<p class="placeholder-text" style="color: #ff6b6b;">chunkCountList.json not loaded yet.</p>`;
+      return;
+    }
+
+    let countKeys = [];
+    if (explicitSn && /^\d+$/.test(explicitSn)) countKeys = [parseInt(explicitSn, 10)];
+    else if (activeSnToken && activeSnToken !== true) countKeys = [parseInt(activeSnToken, 10)];
+    else countKeys = [1, 2];
+
+    const storageKey = 'sn_cache_' + countKeys.sort().join('_');
+    let matchedSnWords = [];
+    let validPrompts = [];
+
+    countKeys.forEach(k => {
+      if (chunkCountData.counts[k]) {
+        validPrompts.push(...chunkCountData.counts[k].filter(p => !p.includes("'") && !p.includes("-")));
       }
+    });
 
-      let basePool = [];
-      for (const posKey in posIndex) {
-        if (posKey.startsWith(posQuery)) {
-          basePool.push(...posIndex[posKey]);
+    currentSnPrompts = validPrompts;
+
+    if (localStorage.getItem(storageKey)) {
+      matchedSnWords = JSON.parse(localStorage.getItem(storageKey));
+    } else {
+      let collectedWords = new Set();
+      const allDictionaryWords = Object.keys(dictionaryData);
+
+      validPrompts.forEach(prompt => {
+        const upperPrompt = prompt.toUpperCase();
+        try {
+          const regex = new RegExp(upperPrompt, 'i');
+          allDictionaryWords.forEach(word => { if (regex.test(word)) collectedWords.add(word); });
+        } catch (err) {
+          allDictionaryWords.forEach(word => { if (word.toUpperCase().includes(upperPrompt)) collectedWords.add(word); });
         }
+      });
+      matchedSnWords = Array.from(collectedWords);
+      try { localStorage.setItem(storageKey, JSON.stringify(matchedSnWords)); } catch (e) { }
+    }
+    snPool = new Set(matchedSnWords);
+  }
+
+  // resolve @def pool
+  let explicitDefPos = null;
+  if (queryLower.startsWith('@def:')) {
+    const spaceIdx = query.indexOf(' ');
+    explicitDefPos = spaceIdx !== -1 ? query.slice(5, spaceIdx).trim().toLowerCase() : query.slice(5).trim().toLowerCase();
+  }
+
+  if (activePosToken || explicitDefPos || queryLower.startsWith('@def')) {
+    let posQuery = '';
+    if (explicitDefPos) posQuery = explicitDefPos;
+    else if (activePosToken && activePosToken !== true) posQuery = activePosToken;
+
+    let basePool = [];
+    if (posQuery !== '') {
+      for (const posKey in posIndex) {
+        if (posKey.startsWith(posQuery)) basePool.push(...posIndex[posKey]);
       }
       basePool = [...new Set(basePool)];
-
-      if (subQuery !== '') {
-        try {
-          const regex = new RegExp(subQuery, 'i');
-          matchedWords = basePool.filter((word) => regex.test(word));
-        } catch (err) {
-          matchedWords = basePool.filter((word) => word.toLowerCase().includes(subQuery.toLowerCase()));
-        }
-      } else {
-        matchedWords = basePool;
-      }
     } else {
-      const subQuery = query.slice(4).trim();
-      if (subQuery === '') {
-        matchedWords = definedWordsCache;
-      } else {
-        try {
-          const regex = new RegExp(subQuery, 'i');
-          matchedWords = definedWordsCache.filter((word) => regex.test(word));
-        } catch (err) {
-          matchedWords = definedWordsCache.filter((word) => word.toLowerCase().includes(subQuery.toLowerCase()));
-        }
-      }
+      basePool = definedWordsCache;
     }
-  } else {
-    const words = Object.keys(dictionaryData);
-    try {
-      const regex = new RegExp(query, 'i');
-      matchedWords = words.filter((word) => regex.test(word));
-    } catch (err) {
-      matchedWords = words.filter((word) => word.toLowerCase().includes(query.toLowerCase()));
+    defPool = new Set(basePool);
+  }
+
+  // combine pools
+  let baseWords = [];
+  if (snPool !== null && defPool !== null) baseWords = [...snPool].filter(word => defPool.has(word));
+  else if (snPool !== null) baseWords = [...snPool];
+  else if (defPool !== null) baseWords = [...defPool];
+  else baseWords = Object.keys(dictionaryData);
+
+  // get active query
+  let activeTextQuery = query;
+  if (explicitSn) {
+    const spaceIdx = query.indexOf(' ');
+    activeTextQuery = spaceIdx !== -1 ? query.slice(spaceIdx + 1).trim() : '';
+  }
+  if (explicitDefPos || queryLower.startsWith('@def')) {
+    const spaceIdx = activeTextQuery.indexOf(' ');
+    if (spaceIdx !== -1 && (activeTextQuery.startsWith('@def') || activeTextQuery.startsWith('@def:'))) {
+      activeTextQuery = activeTextQuery.slice(spaceIdx + 1).trim();
+    } else if (activeTextQuery.startsWith('@def')) {
+      activeTextQuery = '';
     }
   }
-  currentMatchedWords = matchedWords;
-  applySortingAndRender();
+
+  let matchedWords = [];
+  if (activeTextQuery !== '') {
+    try {
+      const regex = new RegExp(activeTextQuery, 'i');
+      matchedWords = baseWords.filter(word => regex.test(word));
+    } catch (err) {
+      matchedWords = baseWords.filter(word => word.toLowerCase().includes(activeTextQuery.toLowerCase()));
+    }
+  } else {
+    matchedWords = baseWords;
+  }
+
+  // randomize search if completely empty + no tokens
+  if (query.trim() === '' && !activePosToken && !activeSnToken) {
+    for (let i = matchedWords.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [matchedWords[i], matchedWords[j]] = [matchedWords[j], matchedWords[i]];
+    }
+    currentMatchedWords = matchedWords;
+    displayedCount = 0;
+    renderResults();
+  } else {
+    currentMatchedWords = matchedWords;
+    applySortingAndRender();
+  }
 }
 
-// sorting utility function
+// rendering
 function applySortingAndRender() {
   currentMatchedWords.sort((a, b) => {
     let comparison = 0;
@@ -367,18 +390,15 @@ function applySortingAndRender() {
       comparison = a.localeCompare(b);
     } else {
       comparison = a.length - b.length;
-      if (comparison === 0) {
-        comparison = a.localeCompare(b);
-      }
+      if (comparison === 0) comparison = a.localeCompare(b);
     }
     return sortDirection === 'asc' ? comparison : -comparison;
   });
 
-  displayedCount = 0;
+  displayedCount = 0
   renderResults();
 }
 
-// display filtered words in batches (BATCH_SIZE) with infinite scroll support
 function renderResults() {
   if (currentMatchedWords.length === 0) {
     resultsContainer.innerHTML = `<p class="placeholder-text">No matching words found.</p>`;
@@ -391,26 +411,22 @@ function renderResults() {
     resultsContainer.innerHTML = html;
 
     const gridContainer = document.getElementById('word-grid-container');
-    gridContainer.addEventListener('scroll', handleGridScroll);
+    if (gridContainer) gridContainer.addEventListener('scroll', handleGridScroll);
   }
 
   const gridContainer = document.getElementById('word-grid-container');
   if (!gridContainer) return;
 
-  const nextBatchEnd = Math.min(
-    displayedCount + BATCH_SIZE,
-    currentMatchedWords.length
-  );
+  const nextBatchEnd = Math.min(displayedCount + BATCH_SIZE, currentMatchedWords.length);
   const batchToRender = currentMatchedWords.slice(displayedCount, nextBatchEnd);
 
   let batchHtml = '';
   batchToRender.forEach((word) => {
     const hasDefinition = wordHasRealDefinition(word);
-    const cssClass = hasDefinition
-      ? 'word-pill has-definition'
-      : 'word-pill no-definition';
+    const cssClass = hasDefinition ? 'word-pill has-definition' : 'word-pill no-definition';
+    const displayText = currentSnPrompts.length > 0 ? highlightSnMatch(word, currentSnPrompts) : word;
 
-    batchHtml += `<button class="${cssClass}" data-word="${word}">${word}</button>`;
+    batchHtml += `<button class="${cssClass}" data-word="${word}">${displayText}</button>`;
   });
 
   gridContainer.insertAdjacentHTML('beforeend', batchHtml);
@@ -420,12 +436,8 @@ function renderResults() {
     if (!btn.dataset.bound) {
       btn.dataset.bound = 'true';
       const word = btn.getAttribute('data-word');
-      const hasDefinition = wordHasRealDefinition(word);
-
-      if (hasDefinition) {
-        btn.addEventListener('click', () => {
-          openModal(word);
-        });
+      if (wordHasRealDefinition(word)) {
+        btn.addEventListener('click', () => openModal(word));
       } else {
         btn.style.cursor = 'default';
       }
@@ -433,17 +445,40 @@ function renderResults() {
   });
 }
 
-// checks if scrolled near bottom of word list
 function handleGridScroll(e) {
   const target = e.target;
   if (target.scrollTop + target.clientHeight >= target.scrollHeight - 30) {
-    if (displayedCount < currentMatchedWords.length) {
-      renderResults();
-    }
+    if (displayedCount < currentMatchedWords.length) renderResults();
   }
 }
 
-// modal body
+function renderPlaceholder () {
+  resultsContainer.innerHTML = `
+    <div class="placeholder-wrapper">
+      <p class="placeholder-text">Enter a search query for results.</p>
+      <p class="placeholder-hint">allows <span id="regex-help-link" class="interactive-link">RegEx</span> queries.</p>
+    </div>
+  `;
+
+  const regexHelpLink = document.getElementById('regex-help-link');
+  if (regexHelpLink) regexHelpLink.addEventListener('click', openRegexHelpModal);
+}
+
+function openRegexHelpModal() {
+  let content = `<h2>RegEx Search Guide</h2>`;
+  content += `<p><b>reg</b>ular <b>ex</b>pression can be used for advanced pattern matching. examples:</p>`;
+  content += `<ul class="def-list" style="margin-left: 1rem;">`;
+  content += `<li><strong>^a</strong> - starts with "a"</li>`;
+  content += `<li><strong>a$</strong> - ends with "a"</li>`;
+  content += `<li><strong>a.a</strong> - wildcard matching [<b>.</b>]</li>`;
+  content += `<li><strong>[aeiou]{3}</strong> - 3 vowels in a row</li>`;
+  content += `</ul>`;
+  content += `<p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-subtle);">Tip: Use <strong>@def</strong> for definitions, of <strong>@sn:[number]</strong> to search via number of solutions for letter chunk.</p>`;
+
+  modalBody.innerHTML = content;
+  modal.classList.remove('hidden');
+}
+
 function openModal(word) {
   const entries = dictionaryData[word];
   let content = `<h2>${word}</h2>`;
@@ -451,21 +486,15 @@ function openModal(word) {
   entries.forEach((entry, index) => {
     content += `<div class="definition-entry">`;
     content += `<span class="pos-tag">${entry.pos}</span>`;
-
-    if (entry.pron) {
-      content += `<span class="ipa-tag">${entry.pron}</span>`;
-    }
+    if (entry.pron) content += `<span class="ipa-tag">${entry.pron}</span>`;
 
     if (Array.isArray(entry.def)) {
       content += `<ul class="def-list">`;
-      entry.def.forEach((d) => {
-        content += `<li>${d}</li>`;
-      });
+      entry.def.forEach(d => { content += `<li>${d}</li>`; });
       content += `</ul>`;
     } else {
       content += `<p>${entry.def}</p>`;
     }
-
     content += `</div>`;
 
     if (index < entries.length - 1) {
@@ -477,21 +506,32 @@ function openModal(word) {
   modal.classList.remove('hidden');
 }
 
-// close modal if X is clicked
-closeModalBtn.addEventListener('click', () => {
-  modal.classList.add('hidden');
-});
+function wordHasRealDefinition(word) {
+  const entries = dictionaryData[word];
+  if (!entries || !Array.isArray(entries)) return false;
 
-// close modal if clicking outside
-modal.addEventListener('click', (e) => {
-  if (e.target === modal) {
-    modal.classList.add('hidden');
-  }
-});
+  return entries.some((entry) => {
+    if (!entry.def) return false;
+    if (Array.isArray(entry.def)) return entry.def.length > 0;
+    return typeof entry.def === 'string' && entry.def.trim() !== '';
+  });
+}
 
-// close modal when ESC is pressed
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-    modal.classList.add('hidden');
+function highlightSnMatch(word, prompts) {
+  if (!prompts || prompts.length === 0) return word;
+
+  const upperWord = word.toUpperCase();
+  for (const prompt of prompts) {
+    const upperPrompt = prompt.toUpperCase();
+    const index = upperWord.indexOf(upperPrompt);
+    if (index !== -1) {
+      const originalChunk = word.slice(index, index + prompt.length);
+      return (
+        word.slice(0, index) +
+        `<span class="word-highlight">${originalChunk}</span>` +
+        word.slice(index + prompt.length)
+      );
+    }
   }
-});
+  return word;
+}

@@ -171,6 +171,11 @@ sortDirBtn.addEventListener('click', () => {
   if (currentMatchedWords.length > 0) applySortingAndRender();
 });
 
+const helpBtn = document.getElementById('help-btn');
+if (helpBtn) {
+  helpBtn.addEventListener('click', openRegexHelpModal);
+}
+
 document.addEventListener('keydown', (e) => {
   if (e.key === '/' && document.activeElement !== searchInput) {
     e.preventDefault();

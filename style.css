@@ -372,3 +372,15 @@ main {
 .def-list li {
   margin-bottom: 0.3rem;
 }
+
+.def-link {
+  color: var(--text-ipa);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.def-link:hover {
+  opacity: 0.8;
+}

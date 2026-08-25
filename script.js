@@ -184,6 +184,18 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+modalBody.addEventListener('click', (e) => {
+  const defLink = e.target.closest('.def-link');
+  if (!defLink) return;
+
+  const targetWord = defLink.getAttribute('data-word');
+  const upperWord = targetWord ? targetWord.toUpperCase() : '';
+
+  if (upperWord && dictionaryData[upperWord]) {
+    openModal(upperWord);
+  }
+})
+
 closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
 modal.addEventListener('click', (e) => {
   if (e.target === modal) modal.classList.add('hidden');
@@ -505,10 +517,10 @@ function openModal(word) {
 
     if (Array.isArray(entry.def)) {
       content += `<ul class="def-list">`;
-      entry.def.forEach(d => { content += `<li>${d}</li>`; });
+      entry.def.forEach(d => { content += `<li>${formatDefinitionText(d)}</li>`; });
       content += `</ul>`;
     } else {
-      content += `<p>${entry.def}</p>`;
+      content += `<p>${formatDefinitionText(entry.def)}</p>`;
     }
     content += `</div>`;
 
@@ -519,6 +531,21 @@ function openModal(word) {
 
   modalBody.innerHTML = content;
   modal.classList.remove('hidden');
+}
+
+function formatDefinitionText(text) {
+  if (typeof text !== 'string') return text;
+
+  return text.replace(/\[\[(.*?)\]\]/g, (match, word) => {
+    word = word.trim();
+    const upperWord = word.toUpperCase();
+
+    if (dictionaryData[upperWord] && wordHasRealDefinition(upperWord)) {
+      return `<span class="def-link" data-word="${word}">${word}</span>`;
+    }
+
+    return word;
+  });
 }
 
 function wordHasRealDefinition(word) {

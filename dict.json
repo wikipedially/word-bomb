@@ -30,24 +30,24 @@
   "AAHS": [
     {
       "pos": "noun, pl.",
-      "def": "Plural form of aah."
+      "def": "Plural form of the noun 'aah'."
     },
     {
       "pos": "verb",
-      "def": "Third person singular present form of aah."
+      "def": "Third person singular present form of the verb 'aah'."
     }
   ],
   "AAL": [],
   "AALII": [
     {
       "pos": "noun",
-      "def": "A tough, bushy shrub or small tree found in warm parts of the world that has sticky leaves and colorful, papery seed pods.\nHawaiian name for Dodonaea viscosa, known as hopbush or broadleaf hopbush in English."
+      "def": "A tough, bushy shrub or small tree found in warm parts of the world that has sticky leaves and colorful, papery seed pods.\n\nHawaiian name for Dodonaea viscosa, known as hopbush or broadleaf hopbush in English."
     }
   ],
   "AALIIS": [
     {
       "pos": "noun, pl.",
-      "def": "Plural form of aalii."
+      "def": "Plural form of 'aalii'."
     }
   ],
   "AALS": [],
@@ -17768,7 +17768,7 @@
     {
       "pos": "noun, pl.",
       "pron": "ba-la-LAYK-uhz",
-      "def": "Plural form of the noun 'balalaika'."
+      "def": "Plural form of 'balalaika'."
     }
   ],
   "BALANCE": [],
@@ -32410,7 +32410,13 @@
   "CACOMIXL": [],
   "CACOMIXLE": [],
   "CACOMIXLES": [],
-  "CACOMIXLS": [],
+  "CACOMIXLS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "ka-ko-MIK-suhlz",
+      "def": "Plural form of 'cacomixl'."
+    }
+  ],
   "CACONYM": [],
   "CACONYMIES": [],
   "CACONYMS": [],
@@ -115206,9 +115212,36 @@
   "HOWRES": [],
   "HOWS": [],
   "HOWSO": [],
-  "HOWSOEVER": [],
-  "HOWSOMDEVER": [],
-  "HOWSOMEVER": [],
+  "HOWSOEVER": [
+    {
+      "pos": "adverb",
+      "pron": "haw-sow-EV-r",
+      "def": "Alternative form of 'however', typically in a formal or literary manner."
+    },
+    {
+      "pos": "conjunction"
+    }
+  ],
+  "HOWSOMDEVER": [
+    {
+      "pos": "adverb",
+      "pron": "haw-sum-DEV-r",
+      "def": "Alternative form of 'howsomever'."
+    },
+    {
+      "pos": "conjunction"
+    }
+  ],
+  "HOWSOMEVER": [
+    {
+      "pos": "adverb",
+      "pron": "haw-sum-EV-r",
+      "def": "Archaic form of 'however'."
+    },
+    {
+      "pos": "conjunction"
+    }
+  ],
   "HOWTOWDIE": [],
   "HOWTOWDIES": [],
   "HOWZAT": [],
@@ -127995,7 +128028,23 @@
   "IWIS": [],
   "IXIA": [],
   "IXIAS": [],
-  "IXNAY": [],
+  "IXNAY": [
+    {
+      "pos": "noun",
+      "pron": "IKS-nay",
+      "def": "Nothing; nix. Typically 'ixnay on...' or 'ixnay with...'.\n\nFrom Pig Latin; slang term."
+    },
+    {
+      "pos": "verb",
+      "def": "To reject or cancel something; nix."
+    },
+    {
+      "pos": "interjection"
+    },
+    {
+      "pos": "slang"
+    }
+  ],
   "IXODIASES": [],
   "IXODIASIS": [],
   "IXODID": [],
@@ -130489,7 +130538,13 @@
   "KAFILAS": [],
   "KAFIR": [],
   "KAFIRS": [],
-  "KAFKAESQUE": [],
+  "KAFKAESQUE": [
+    {
+      "pos": "adjective",
+      "pron": "kaf-kuh-ESK",
+      "def": "Like the writings of Franz Kafka; surreal, disorienting, nightmarish.\n\nNamed after Czech novelist Franz Kafka."
+    }
+  ],
   "KAFS": [],
   "KAFTAN": [],
   "KAFTANS": [],
@@ -167035,8 +167090,20 @@
   "OLIVINIC": [],
   "OLIVINITIC": [],
   "OLLA": [],
-  "OLLAMH": [],
-  "OLLAMHS": [],
+  "OLLAMH": [
+    {
+      "pos": "noun",
+      "pron": "UH-luhv",
+      "def": "Archaic Irish term denoting a master of discipline: typically poets, sages, or historians.\n\nFrom Old Irish; lit. Chief, Professor."
+    }
+  ],
+  "OLLAMHS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "UH-luhvz",
+      "def": "Plural form of 'ollamh'."
+    }
+  ],
   "OLLAS": [],
   "OLLAV": [],
   "OLLAVS": [],
@@ -167067,7 +167134,7 @@
     {
       "pos": "noun, pl.",
             "pron": "oh-loh-lee-OO-keez",
-      "def": "Plural form of ololiuqui."
+      "def": "Plural form of 'ololiuqui'."
     }
   ],
   "OLOROSO": [],
@@ -167086,7 +167153,7 @@
     {
       "pos": "noun, pl.",
       "pron": "OH-lee-kooks",
-      "def": "Plural form of olycook."
+      "def": "Plural form of 'olycook'."
     }
   ],
   "OLYKOEK": [
@@ -167100,7 +167167,7 @@
     {
       "pos": "noun, pl.",
       "pron": "OH-lee-kooks",
-      "def": "Plural form of olykoek."
+      "def": "Plural form of 'olykoek'."
     }
   ],
   "OLYMPIAD": [],
@@ -167857,7 +167924,13 @@
   "OPEROSITIES": [],
   "OPEROSITY": [],
   "OPES": [],
-  "OPGEFOK": [],
+  "OPGEFOK": [
+    {
+      "pos": "adjective",
+      "pron": "OP-geh-fok",
+      "def": "Slang term meaning damaged or messed up.\n\nFrom Afrikaans; Used informally as a swear word"
+    }
+  ],
   "OPHICALCITE": [],
   "OPHICALCITES": [],
   "OPHICLEIDE": [],
@@ -261903,35 +261976,35 @@
     {
       "pos": "noun, pl. (HEB)",
       "pron": "TSA-dik-im",
-      "def": "Plural form of tsaddik."
+      "def": "Plural form of 'tsaddik'."
     }
   ],
   "TSADDIKS": [
     {
       "pos": "noun, pl.",
       "pron": "TSA-diks",
-      "def": "Plural form of tsaddik."
+      "def": "Plural form of 'tsaddik'."
     }
   ],
   "TSADDIQ": [
     {
       "pos": "noun",
       "pron": "TSA-dik",
-      "def": "Alternative form of tzaddik."
+      "def": "Alternative form of 'tzaddik'."
     }
   ],
   "TSADDIQIM": [
     {
       "pos": "noun, pl. (HEB)",
       "pron": "TSA-dik-im",
-      "def": "Plural form of tsaddiq."
+      "def": "Plural form of 'tsaddiq'."
     }
   ],
   "TSADDIQS": [
     {
       "pos": "noun, pl.",
       "pron": "TSA-diks",
-      "def": "Plural form of tsaddiq."
+      "def": "Plural form of 'tsaddiq'."
     }
   ],
   "TSADE": [
@@ -261945,35 +262018,35 @@
     {
       "pos": "noun, pl.",
       "pron": "TSA-deez",
-      "def": "Plural form of tsade."
+      "def": "Plural form of 'tsade'."
     }
   ],
   "TSADI": [
     {
       "pos": "noun",
       "pron": "TSA-dee",
-      "def": "Alternative form of tsade."
+      "def": "Alternative form of 'tsade'."
     }
   ],
   "TSADIK": [
     {
       "pos": "noun",
       "pron": "TSA-dik",
-      "def": "Alternative form of tzaddik."
+      "def": "Alternative form of 'tzaddik'."
     }
   ],
   "TSADIKS": [
     {
       "pos": "noun, pl.",
       "pron": "TSA-diks",
-      "def": "Plural form of tsadik."
+      "def": "Plural form of 'tsadik'."
     }
   ],
   "TSADIS": [
     {
       "pos": "noun, pl.",
       "pron": "TSA-deez",
-      "def": "Plural form of tsadi."
+      "def": "Plural form of 'tsadi'."
     }
   ],
   "TSAMBA": [],
@@ -280581,13 +280654,13 @@
   "WELTANSCHAUUNGEN": [
     {
       "pos": "noun, pl. (DEU)",
-      "def": "Plural form of weltanschauung."
+      "def": "Plural form of 'weltanschauung'."
     }
   ],
   "WELTANSCHAUUNGS": [
     {
       "pos": "noun, pl.",
-      "def": "Plural form of weltanschauung."
+      "def": "Plural form of 'weltanschauung'."
     }
   ],
   "WELTED": [],
@@ -285767,7 +285840,7 @@
     {
       "pos": "noun, pl.",
       "pron": "ZA-diks",
-      "def": "Plural form of zaddick."
+      "def": "Plural form of 'zaddick'."
     }
   ],
   "ZADDIK": [
@@ -285781,14 +285854,14 @@
     {
       "pos": "noun, pl. (HEB)",
       "pron": "ZA-dik-im",
-      "def": "Plural form of zaddik."
+      "def": "Plural form of 'zaddik'."
     }
   ],
   "ZADDIKS": [
     {
       "pos": "noun, pl.",
       "pron": "ZA-diks",
-      "def": "Plural form of zaddik."
+      "def": "Plural form of 'zaddik'."
     }
   ],
   "ZAFFAR": [],

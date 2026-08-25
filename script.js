@@ -115,7 +115,7 @@ searchInput.addEventListener('keydown', (e) => {
     }
     if (query.startsWith('@def:') && !activePosToken) {
       const typedPos = query.slice(5).trim().toLowerCase();
-      const matches = ENGLISH_POS.find((pos) => pos.startsWith(typedPos));
+      const matches = ENGLISH_POS.filter((pos) => pos.startsWith(typedPos));
       if (matches.length === 1) {
         e.preventDefault();
         setDefToken(matches[0]);

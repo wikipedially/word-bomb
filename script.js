@@ -115,10 +115,10 @@ searchInput.addEventListener('keydown', (e) => {
     }
     if (query.startsWith('@def:') && !activePosToken) {
       const typedPos = query.slice(5).trim().toLowerCase();
-      const match = ENGLISH_POS.find((pos) => pos.startsWith(typedPos));
-      if (match) {
+      const matches = ENGLISH_POS.find((pos) => pos.startsWith(typedPos));
+      if (matches.length === 1) {
         e.preventDefault();
-        setDefToken();
+        setDefToken(matches[0]);
         return;
       }
     } else if (query.startsWith('@sn:') && !activeSnToken) {
@@ -488,10 +488,20 @@ function openModal(word) {
   const entries = dictionaryData[word];
   let content = `<h2>${word}</h2>`;
 
-  entries.forEach((entry, index) => {
+  const validEntries = entries.filter((entry) => {
+    if (!entry.def) return false;
+    if (Array.isArray(entry.def)) return entry.def.length > 0;
+    return typeof entry.def === 'string' && entry.def.trim() !== '';
+  });
+
+  validEntries.forEach((entry, index) => {
     content += `<div class="definition-entry">`;
-    content += `<span class="pos-tag">${entry.pos}</span>`;
-    if (entry.pron) content += `<span class="ipa-tag">${entry.pron}</span>`;
+    if (entry.pos) {
+      content += `<span class="pos-tag">${entry.pos}</span>`;
+    }
+    if (entry.pron) {
+      content += `<span class="ipa-tag">${entry.pron}</span>`;
+    }
 
     if (Array.isArray(entry.def)) {
       content += `<ul class="def-list">`;
@@ -502,7 +512,7 @@ function openModal(word) {
     }
     content += `</div>`;
 
-    if (index < entries.length - 1) {
+    if (index < validEntries.length - 1) {
       content += `<hr style="border: 1px dotted #333; margin: 1rem 0;">`;
     }
   });

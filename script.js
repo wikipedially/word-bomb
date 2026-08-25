@@ -13,7 +13,7 @@ let activePosToken = null;
 let activeSnToken = null;
 let searchDebounceTimer = null;
 
-const ENGLISH_POS = ['noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'determiner', 'article', 'slang'];
+const ENGLISH_POS = ['noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'determiner', 'article', 'slang', 'gerund', 'onomatopoeia'];
 
 // dom elements
 const searchInput = document.getElementById('search-input');

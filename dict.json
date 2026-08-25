@@ -8,7 +8,7 @@
   "AAH": [
     {
       "pos": "verb",
-      "def": "To make the sound 'aah'."
+      "def": "To make the sound \"aah\"."
     },
     {
       "pos": "interjection",
@@ -34,7 +34,7 @@
     },
     {
       "pos": "verb",
-      "def": "Third person singular present form of the verb [[aah]]."
+      "def": "Third-person singular present form of the verb [[aah]]."
     }
   ],
   "AAL": [],
@@ -55,9 +55,27 @@
   "AARDVARKS": [],
   "AARDWOLF": [],
   "AARDWOLVES": [],
-  "AARGH": [],
-  "AARRGH": [],
-  "AARRGHH": [],
+  "AARGH": [
+    {
+      "pos": "interjection",
+      "pron": "arg",
+      "def": "Elongated form of [[argh]]."
+    }
+  ],
+  "AARRGH": [
+    {
+      "pos": "interjection",
+      "pron": "arg",
+      "def": "Elongated form of [[argh]]."
+    }
+  ],
+  "AARRGHH": [
+    {
+      "pos": "interjection",
+      "pron": "arg",
+      "def": "Elongated form of [[argh]]."
+    }
+  ],
   "AARTI": [],
   "AARTIS": [],
   "AAS": [],
@@ -3859,7 +3877,7 @@
     {
       "pos": "verb",
       "pron": "uh-FAY",
-      "def": "Archaic word meaning to betroth, to promise , or to have faith in someone."
+      "def": "Archaic word meaning to [[betroth]], to promise, or to have faith in someone."
     }
   ],
   "AFFYDE": [
@@ -22144,9 +22162,27 @@
   "BESEECHINGNESS": [],
   "BESEECHINGS": [],
   "BESEEING": [],
-  "BESEEKE": [],
-  "BESEEKES": [],
-  "BESEEKING": [],
+  "BESEEKE": [
+    {
+      "pos": "verb",
+      "pron": "bih-SEEK",
+      "def": "Archaic form of [[beseech]]."
+    }
+  ],
+  "BESEEKES": [
+    {
+      "pos": "verb",
+      "pron": "bih-SEEKS",
+      "def": "Third-person singular present form of [[beseeke]]."
+    }
+  ],
+  "BESEEKING": [
+    {
+      "pos": "verb",
+      "pron": "bih-SEEK-ing",
+      "def": "Present participle form of [[beseeke]]."
+    }
+  ],
   "BESEEM": [],
   "BESEEMED": [],
   "BESEEMING": [],
@@ -128032,11 +128068,11 @@
     {
       "pos": "noun",
       "pron": "IKS-nay",
-      "def": "Nothing; nix. Typically 'ixnay on...' or 'ixnay with...'.\n\nFrom Pig Latin; slang term."
+      "def": "Nothing; [[nix]]. Typically \"ixnay on...\" or \"ixnay with...\".\n\nFrom Pig Latin; slang term."
     },
     {
       "pos": "verb",
-      "def": "To reject or cancel something; nix."
+      "def": "To reject or cancel something; [[nix]]."
     },
     {
       "pos": "interjection"
@@ -132599,8 +132635,20 @@
   "KITCHEN": [],
   "KITCHENALIA": [],
   "KITCHENALIAS": [],
-  "KITCHENDOM": [],
-  "KITCHENDOMS": [],
+  "KITCHENDOM": [
+    {
+      "pos": "noun",
+      "pron": "KI-chen-dum",
+      "def": "The domain of the kitchen.\n\nFrom *kitchen* and *-dom* (suffix signifying domain)."
+    }
+  ],
+  "KITCHENDOMS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "KI-chen-dumz",
+      "def": "Plural form of [[kitchendom]]."
+    }
+  ],
   "KITCHENED": [],
   "KITCHENER": [],
   "KITCHENERS": [],
@@ -141011,14 +141059,83 @@
   "LOWRIES": [],
   "LOWRY": [],
   "LOWS": [],
-  "LOWSE": [],
-  "LOWSED": [],
-  "LOWSENING": [],
-  "LOWSENINGS": [],
-  "LOWSER": [],
-  "LOWSES": [],
-  "LOWSEST": [],
-  "LOWSING": [],
+  "LOWSE": [
+    {
+      "pos": "verb",
+      "pron": "LAWS",
+      "def": "To loosen, untie, release, let go, get off work.\n\nDialectal Scottish term."
+    },
+    {
+      "pos": "adjective",
+      "pron": "LAWS",
+      "def": "Loose or unfastened."
+    }
+  ],
+  "LOWSED": [
+    {
+      "pos": "verb",
+      "pron": "LAWST",
+      "def": "Past tense and past participle form of [[lowse]]."
+    }
+  ],
+  "LOWSENING": [
+    {
+      "pos": "noun",
+      "pron": "LAW-zeh-ning",
+      "def": "The act of finishing a workday, or the traditional celebration marking the end of a labor or apprenticeship period."
+    },
+    {
+      "pos": "gerund"
+    }
+  ],
+  "LOWSENINGS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "LAW-zeh-ningz",
+      "def": "Plural form of [[lowsening]]."
+    }
+  ],
+  "LOWSER": [
+    {
+      "pos": "noun",
+      "pron": "LAWS-r",
+      "def": "One who [[lowse]]s."
+    },
+    {
+      "pos": "adjective",
+      "pron": "LAWS-r",
+      "def": "Comparative form of the adjective [[lowse]]."
+    }
+  ],
+  "LOWSES": [
+    {
+      "pos": "verb",
+      "pron": "LAWS-ez",
+      "def": "Third-person singular present form of [[lowse]]."
+    }
+  ],
+  "LOWSEST": [
+    {
+      "pos": "adjective",
+      "pron": "LAWS-ist",
+      "def": "Superlative form of the adjective [[lowse]]."
+    }
+  ],
+  "LOWSING": [
+    {
+      "pos": "noun",
+      "pron": "LAW-zing",
+      "def": "Alternative form of [[lowsening]]."
+    },
+    {
+      "pos": "gerund"
+    },
+    {
+      "pos": "verb",
+      "pron": "LAW-zing",
+      "def": "Present participle form of [[lowse]]."
+    }
+  ],
   "LOWSIT": [],
   "LOWT": [],
   "LOWTED": [],
@@ -147879,7 +147996,7 @@
     {
       "pos": "verb",
       "pron": "mee-SEEM-eth",
-      "def": "Archaic form of 'it seems to me' or 'I think'."
+      "def": "Archaic form of \"it seems to me\" or \"I think\"."
     }
   ],
   "MESEEMS": [
@@ -148654,21 +148771,21 @@
     {
       "pos": "verb",
       "pron": "mee-THINK",
-      "def": "Archaic form of 'it seems to me' or 'I think'."
+      "def": "Archaic form of \"it seems to me\" or \"I think\"."
     }
   ],
   "METHINKETH": [
     {
       "pos": "verb",
       "pron": "mee-THINK-eth",
-      "def": "Archaic form of 'it seems to me' or 'I think'."
+      "def": "Archaic form of \"it seems to me\" or \"I think\"."
     }
   ],
   "METHINKS": [
     {
       "pos": "verb",
       "pron": "mee-THINKS",
-      "def": "Archaic form of 'it seems to me' or 'I think'."
+      "def": "Archaic form of \"it seems to me\" or \"I think\"."
     }
   ],
   "METHIONINE": [],
@@ -167126,14 +167243,14 @@
   "OLOLIUQUI": [
     {
       "pos": "noun",
-            "pron": "oh-loh-lee-OO-kee",
-      "def": "A tropical morning glory vine native to Mexico and Central America, whose small, brown, oval seeds have strong psychedelic effects.\n\nFrom Nahuatl 'ololiuhqui', referring to the small, round seeds of the morning glory, not the plant itself. The plant is called 'coaxihuitl' in Nahuatl."
+      "pron": "oh-loh-lee-OO-kee",
+      "def": "A tropical morning glory vine native to Mexico and Central America, whose small, brown, oval seeds have strong psychedelic effects.\n\nFrom Nahuatl *ololiuhqui*, referring to the small, round seeds of the morning glory, not the plant itself, which is called *coaxihuitl* in Nahuatl."
     }
   ],
   "OLOLIUQUIS": [
     {
       "pos": "noun, pl.",
-            "pron": "oh-loh-lee-OO-keez",
+      "pron": "oh-loh-lee-OO-keez",
       "def": "Plural form of [[ololiuqui]]."
     }
   ],
@@ -167160,7 +167277,7 @@
     {
       "pos": "noun",
       "pron": "OH-lee-kook",
-      "def": "A ball of sweet dough fried in oil or lard, an ancestor of the modern doughnut.\n\nLit. 'oil cake', from Dutch 'olie' (oil) and koek (cake)."
+      "def": "A ball of sweet dough fried in oil or lard, an ancestor of the modern doughnut.\n\nLit. *oil cake*, from Dutch *olie* (oil) and *koek* (cake)."
     }
   ],
   "OLYKOEKS": [
@@ -280651,7 +280768,7 @@
   "WELTANSCHAUUNG": [
     {
       "pos": "noun",
-      "def": "Different worldview or overarching ways of looking at life and the universe.\n\nFrom German 'Welt' meaning world, and 'Anschauung' meaning view or perception."
+      "def": "Different worldview or overarching ways of looking at life and the universe.\n\nFrom German *welt* meaning world, and *anschauung* meaning view or perception."
     }
   ],
   "WELTANSCHAUUNGEN": [
@@ -284012,7 +284129,7 @@
     {
       "pos": "verb",
       "pron": "wudst",
-      "def": "Archaic form of the verb [[would]], used when speaking to one person (i.e. 'Thou wouldst')."
+      "def": "Archaic form of the verb [[would]], used when speaking to one person (i.e. \"Thou wouldst\")."
     }
   ],
   "WOUND": [],
@@ -287022,6 +287139,24 @@
   "ZYTHUMS": [],
   "ZYZZYVA": [],
   "ZYZZYVAS": [],
-  "ZZZ": [],
-  "ZZZS": []
+  "ZZZ": [
+    {
+      "pos": "noun",
+      "pron": "zeez",
+      "def": "Sound representing someone snoring."
+    },
+    {
+      "pos": "onomatopoeia"
+    },
+    {
+      "pos": "interjection"
+    }
+  ],
+  "ZZZS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "zeez",
+      "def": "Plural form of [[zzz]]; periods of sleep, informally. (e.g. \"catch some zzzs\")"
+    }
+  ]
 }

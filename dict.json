@@ -41,12 +41,14 @@
   "AALII": [
     {
       "pos": "noun",
-      "def": "A tough, bushy shrub or small tree found in warm parts of the world that has sticky leaves and colorful, papery seed pods.\n\nHawaiian name for Dodonaea viscosa, known as hopbush or broadleaf hopbush in English."
+      "pron": "ah-LEE-?ee",
+      "def": "A tough, bushy shrub or small tree found in warm parts of the world (including Hawaii, Australia, Africa, and tropical America), which has sticky leaves and colorful, papery seed pods.\n\nHawaiian name for Dodonaea viscosa, known as hopbush or broadleaf hopbush in English."
     }
   ],
   "AALIIS": [
     {
       "pos": "noun, pl.",
+      "pron": "ah-LEE-?eez",
       "def": "Plural form of [[aalii]]."
     }
   ],
@@ -99595,13 +99597,58 @@
   "GELOSIES": [],
   "GELOSY": [],
   "GELS": [],
-  "GELSEMIA": [],
-  "GELSEMINE": [],
-  "GELSEMINES": [],
-  "GELSEMININE": [],
-  "GELSEMININES": [],
-  "GELSEMIUM": [],
-  "GELSEMIUMS": [],
+  "GELSEMIA": [
+    {
+      "pos": "noun, pl.",
+      "pron": "jel-SEE-mee-uh",
+      "def": "Alternative form of [[gelsemiums]]; from [[gelsemium]]."
+    }
+  ],
+  "GELSEMINE": [
+    {
+      "pos": "noun",
+      "pron": "JEL-suh-meen",
+      "def": "A natural, highly toxic [[indole]] [[alkaloid]] found in plants of the [[genus]] *[[Gelsemium]]*, such as the Carolina yellow [[jasmine]] (*Gelsemium sempervirens*)."
+    }
+  ],
+  "GELSEMINES": [
+    {
+      "pos": "noun, pl.",
+      "pron": "JEL-suh-meenz",
+      "def": "Plural form of [[gelsemine]]."
+    }
+  ],
+  "GELSEMININE": [
+    {
+      "pos": "noun",
+      "pron": "jel-SEM-uh-neen",
+      "def": "A bitter, highly toxic plant extract made of a mixture of [[alkaloids]] from the roots of plants of the [[genus]] *[[Gelsemium]]*."
+    }
+  ],
+  "GELSEMININES": [
+    {
+      "pos": "noun, pl.",
+      "pron": "jel-SEM-uh-neenz",
+      "def": "Plural form of [[gelseminine]]."
+    }
+  ],
+  "GELSEMIUM": [
+    {
+      "pos": "noun",
+      "pron": "jel-SEE-mee-um",
+      "def": [
+        "A group of woody climbing plants and vines of the family *Gelsemiaceae*, native to warmer parts of Asia and the southern United States. Mostly famous for the Carolina yellow [[jasmine]], featuring bright, fragrant, highly toxic yellow flowers.",
+        "The dried root and underground stem of plants of the genus *Gelsemium*. Historically used in small amounts as a sedative."
+      ]
+    }
+  ],
+  "GELSEMIUMS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "jel-SEE-mee-umz",
+      "def": "Plural form of [[gelsemium]]."
+    }
+  ],
   "GELT": [],
   "GELTS": [],
   "GEM": [],
@@ -130776,8 +130823,20 @@
   "KALYPTRAS": [],
   "KAM": [],
   "KAMA": [],
-  "KAMAAINA": [],
-  "KAMAAINAS": [],
+  "KAMAAINA": [
+    {
+      "pos": "noun",
+      "pron": "ka-muh-?AY-nuh",
+      "def": "Someone who is from Hawaii, regardless of their ethnic background; native.\n\nFrom Hawaiian *kama* (child) and *ʻāina* (land); lit. \"child of the land\"."
+    }
+  ],
+  "KAMAAINAS": [
+    {
+      "pos": "noun, pl.",
+      "pron": "ka-muh-?AY-nuhz",
+      "def": "Plural form of [[kamaaina]]."
+    }
+  ],
   "KAMACITE": [],
   "KAMACITES": [],
   "KAMAHI": [],
@@ -132468,8 +132527,23 @@
   "KINGSIDES": [],
   "KINGSNAKE": [],
   "KINGSNAKES": [],
-  "KINGWOOD": [],
-  "KINGWOODS": [],
+  "KINGWOOD": [
+    {
+      "pos": "noun",
+      "pron": "KING-wud",
+      "def": [
+        "The rare and expensive, dark purple-brown wood which has black stripes and is used to make fancy furniture and decorations.",
+        "A small tropical tree known scientifically as *Dalbergia caerensis*, which is native to northeastern Brazil."
+      ]
+    }
+  ],
+  "KINGWOODS": [
+    {
+      "pos": "noun",
+      "pron": "KING-wud",
+      "def": "Plural form of [[kingwood]]."
+    }
+  ],
   "KININ": [],
   "KININS": [],
   "KINK": [],
@@ -224736,10 +224810,34 @@
   "SEVEN": [],
   "SEVENFOLD": [],
   "SEVENISH": [],
-  "SEVENPENCE": [],
-  "SEVENPENCES": [],
-  "SEVENPENNIES": [],
-  "SEVENPENNY": [],
+  "SEVENPENCE": [
+    {
+      "pos": "noun",
+      "pron": "SEV-un-pens",
+      "def": "A monetary sum worth seven pennies."
+    }
+  ],
+  "SEVENPENCES": [
+    {
+      "pos": "noun, pl.",
+      "pron": "SEV-un-pens-iz",
+      "def": "Plural form of [[sevenpence]]."
+    }
+  ],
+  "SEVENPENNIES": [
+    {
+      "pos": "noun, pl.",
+      "pron": "SEV-un-pen-eez",
+      "def": "Alternative form of [[sevenpences]]."
+    }
+  ],
+  "SEVENPENNY": [
+    {
+      "pos": "adjective",
+      "pron": "SEV-un-pen-ee",
+      "def": "Costing, worth, or having the value of [[sevenpence]]."
+    }
+  ],
   "SEVENS": [],
   "SEVENTEEN": [],
   "SEVENTEENS": [],

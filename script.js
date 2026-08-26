@@ -535,17 +535,18 @@ function openModal(word) {
 
 function formatDefinitionText(text) {
   if (typeof text !== 'string') return text;
-
-  return text.replace(/\[\[(.*?)\]\]/g, (match, word) => {
+  text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/\[\[(.*?)\]\]/g, (match, word) => {
     word = word.trim();
     const upperWord = word.toUpperCase();
-
+    
     if (dictionaryData[upperWord] && wordHasRealDefinition(upperWord)) {
       return `<span class="def-link" data-word="${word}">${word}</span>`;
     }
-
     return word;
   });
+  return text;
 }
 
 function wordHasRealDefinition(word) {

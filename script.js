@@ -645,7 +645,7 @@ function renderPlaceholder() {
 }
 
 function openRegexHelpModal() {
-  let content = `<h2>RegEx Search Guide</h2>`;
+  let content = `<h2>Search Guide</h2>`;
   content += `<p><b>reg</b>ular <b>ex</b>pression can be used for advanced pattern matching. examples:</p>`;
   content += `<ul class="def-list" style="margin-left: 1rem;">`;
   content += `<li><strong>^a</strong> - starts with "a"</li>`;
@@ -653,7 +653,7 @@ function openRegexHelpModal() {
   content += `<li><strong>a.a</strong> - wildcard matching [<b>.</b>]</li>`;
   content += `<li><strong>[aeiou]{3}</strong> - 3 vowels in a row</li>`;
   content += `</ul>`;
-  content += `<p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-subtle);">Tip: Use <strong>@def</strong> for definitions, or <strong>@sn:[number]</strong> to search via number of solutions for letter chunk. (Make sure to press SPACE after using an @ command.)</p>`;
+  content += `<p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-subtle);">Tip: Use <strong>@def</strong> for definitions, <strong>@sn:[number]</strong> for solution counts, or @fav to view saved words. (Press SPACE after using an @ command.)</p>`;
 
   modalBody.innerHTML = content;
   modal.classList.remove('hidden');

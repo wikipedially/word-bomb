@@ -519,7 +519,7 @@ function searchWords(query) {
 
 // rendering
 function applySortingAndRender() {
-  const isQueryEmpty = searchInput.value.trim() === '' && !activePosToken && !activeSnToken;
+  const isQueryEmpty = searchInput.value.trim() === '' && !activePosToken && !activeSnToken && !activeFavToken;
 
   if (!isQueryEmpty) {
     currentMatchedWords.sort((a, b) => {

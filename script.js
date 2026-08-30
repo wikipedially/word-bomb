@@ -564,7 +564,8 @@ function renderResults() {
     const hasDefinition = wordHasRealDefinition(word);
     const isSaved = savedWords.includes(word);
 
-    let baseClass = hasDefinition ? 'word-pill has-definition' : 'word-pill no-definition';
+    let baseClass = 'word-pill';
+    if (hasDefinition) baseClass += ' has-definition';
     if (isSaved) baseClass += ' saved-word';
 
     const displayText = currentSnPrompts.length > 0 ? highlightSnMatch(word, currentSnPrompts) : word;

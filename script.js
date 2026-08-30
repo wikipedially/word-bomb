@@ -540,12 +540,15 @@ function applySortingAndRender() {
 
 function renderResults() {
   if (currentMatchedWords.length === 0) {
-    resultsContainer.innerHTML = `<p class="placeholder-text">No matching words found.</p>`;
+    resultsContainer.innerHTML = `<p class="placeholder-text">no matching words found.</p>`;
     return;
   }
 
   if (displayedCount === 0) {
-    let html = `<p style="font-size: 0.85rem; color: var(--text-subtle); margin-bottom: 0.5rem;">Found ${currentMatchedWords.length} matches:</p>`;
+    let html = `<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--text-subtle); margin-bottom: 0.5rem;`;
+    html += `<span>found ${currentMatchedWords.length} matches:</span>`;
+    html += `<span style="opacity: 0.65;">right-click or long-press to save</span>`;
+    html += `</div>`;
     html += `<div class="word-grid" id="word-grid-container"></div>`;
     resultsContainer.innerHTML = html;
 
@@ -632,7 +635,7 @@ function handleGridScroll(e) {
 function renderPlaceholder() {
   resultsContainer.innerHTML = `
     <div class="placeholder-wrapper">
-      <p class="placeholder-text">Enter a search query for results.</p>
+      <p class="placeholder-text">enter a search query for results.</p>
       <p class="placeholder-hint">allows <span id="regex-help-link" class="interactive-link">RegEx</span> queries.</p>
     </div>
   `;

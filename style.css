@@ -245,6 +245,7 @@ main {
   gap: 0.5rem;
   padding-top: 4px;
   padding-right: 0.5rem;
+  padding-bottom: 4px;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--border-subtle) transparent;

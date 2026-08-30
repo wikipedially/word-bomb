@@ -545,7 +545,7 @@ function renderResults() {
   }
 
   if (displayedCount === 0) {
-    let html = `<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--text-subtle); margin-bottom: 0.5rem;`;
+    let html = `<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--text-subtle); margin-bottom: 0.5rem;>`;
     html += `<span>found ${currentMatchedWords.length} matches:</span>`;
     html += `<span style="opacity: 0.65;">right-click or long-press to save</span>`;
     html += `</div>`;

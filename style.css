@@ -285,6 +285,29 @@ main {
   transform: translateY(-1px);
 }
 
+/* saved word pill styling */
+.word-pill.saved-word {
+  border-color: #ffd27d !important;
+  color: #ffd27d !important;
+}
+
+/* save-word animation */
+@keyframes save {
+  0% {
+    transform: scale(1.15);
+    background-color: #ffd27d;
+    color: #0f0e13;
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.word-pill.flash-saved {
+  animation: save 0.35s ease-out;
+}
+
 /* highlight matching prompt chunk */
 .word-highlight {
   font-weight: 700;

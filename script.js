@@ -11,7 +11,12 @@ let sortType = 'alpha';
 let sortDirection = 'asc';
 let activePosToken = null;
 let activeSnToken = null;
+let activeFavToken = false;
 let searchDebounceTimer = null;
+let lastSearchQueryWasEmpty = false;
+let isUserSortedWhileEmpty = false;
+
+let savedWords = JSON.parse(localStorage.getItem('word_bomb_saved_words')) || [];
 
 const ENGLISH_POS = ['noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection', 'determiner', 'article', 'slang', 'gerund', 'onomatopoeia'];
 
@@ -113,6 +118,11 @@ searchInput.addEventListener('keydown', (e) => {
       setSnToken(true);
       return;
     }
+    if ((query === '@fav' || query === '@saved') && !activeFavToken) {
+      e.preventDefault();
+      setFavToken();
+      return;
+    }
     if (query.startsWith('@def:') && !activePosToken) {
       const typedPos = query.slice(5).trim().toLowerCase();
       const matches = ENGLISH_POS.filter((pos) => pos.startsWith(typedPos));
@@ -132,6 +142,13 @@ searchInput.addEventListener('keydown', (e) => {
   }
 
   if (e.key === 'Enter') {
+    if (query === '@fav' || query === '@saved') {
+      if (!activeFavToken) {
+        e.preventDefault();
+        setFavToken();
+        return;
+      }
+    }
     if (query.startsWith('@def:') && !activePosToken) {
       const typedPos = query.slice(5).trim().toLowerCase();
       const match = ENGLISH_POS.find((pos) => pos.startsWith(typedPos));
@@ -152,7 +169,8 @@ searchInput.addEventListener('keydown', (e) => {
 
   if (e.key === 'Backspace' && searchInput.value === '') {
     e.preventDefault();
-    if (activePosToken && activeSnToken) removePosToken();
+    if (activeFavToken) removeFavToken();
+    else if (activePosToken && activeSnToken) removePosToken();
     else removeTokens();
   }
 });
@@ -161,6 +179,12 @@ sortTypeBtn.addEventListener('click', () => {
   sortType = sortType === 'alpha' ? 'length' : 'alpha';
   sortTypeIcon.className = sortType === 'alpha' ? 'fa-solid fa-arrow-down-a-z' : 'fa-solid fa-arrow-down-1-9';
   sortTypeBtn.title = sortType;
+  
+  const isQueryEmpty = searchInput.value.trim() === '' && !activePosToken && !activeSnToken && !activeFavToken;
+  if (isQueryEmpty) {
+    isUserSortedWhileEmpty = true;
+  }
+
   if (currentMatchedWords.length > 0) applySortingAndRender();
 });
 
@@ -168,6 +192,12 @@ sortDirBtn.addEventListener('click', () => {
   sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
   sortDirIcon.className = sortDirection === 'asc' ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down';
   sortDirBtn.title = sortDirection;
+  
+  const isQueryEmpty = searchInput.value.trim() === '' && !activePosToken && !activeSnToken && !activeFavToken;
+  if (isQueryEmpty) {
+    isUserSortedWhileEmpty = true;
+  }
+
   if (currentMatchedWords.length > 0) applySortingAndRender();
 });
 
@@ -182,6 +212,10 @@ document.addEventListener('keydown', (e) => {
     searchInput.focus();
     searchInput.select();
   }
+
+  if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+    modal.classList.add('hidden');
+  }
 });
 
 modalBody.addEventListener('click', (e) => {
@@ -194,7 +228,7 @@ modalBody.addEventListener('click', (e) => {
   if (upperWord && dictionaryData[upperWord]) {
     openModal(upperWord);
   }
-})
+});
 
 closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
 modal.addEventListener('click', (e) => {
@@ -205,6 +239,7 @@ modal.addEventListener('click', (e) => {
 function setDefToken(pos = true) {
   activePosToken = pos;
   searchInput.value = '';
+  isUserSortedWhileEmpty = false;
   renderTokensUI();
   evaluateSearch();
   searchInput.focus();
@@ -213,6 +248,16 @@ function setDefToken(pos = true) {
 function setSnToken(num = true) {
   activeSnToken = num;
   searchInput.value = '';
+  isUserSortedWhileEmpty = false;
+  renderTokensUI();
+  evaluateSearch();
+  searchInput.focus();
+}
+
+function setFavToken() {
+  activeFavToken = true;
+  searchInput.value = '';
+  isUserSortedWhileEmpty = false;
   renderTokensUI();
   evaluateSearch();
   searchInput.focus();
@@ -220,6 +265,7 @@ function setSnToken(num = true) {
 
 function removePosToken() {
   activePosToken = null;
+  isUserSortedWhileEmpty = false;
   renderTokensUI();
   evaluateSearch();
   searchInput.focus();
@@ -227,6 +273,15 @@ function removePosToken() {
 
 function removeSnToken() {
   activeSnToken = null;
+  isUserSortedWhileEmpty = false;
+  renderTokensUI();
+  evaluateSearch();
+  searchInput.focus();
+}
+
+function removeFavToken() {
+  activeFavToken = false;
+  isUserSortedWhileEmpty = false;
   renderTokensUI();
   evaluateSearch();
   searchInput.focus();
@@ -235,6 +290,8 @@ function removeSnToken() {
 function removeTokens() {
   activePosToken = null;
   activeSnToken = null;
+  activeFavToken = false;
+  isUserSortedWhileEmpty = false;
   renderTokensUI();
   evaluateSearch();
   searchInput.focus();
@@ -242,6 +299,10 @@ function removeTokens() {
 
 function renderTokensUI() {
   let html = '';
+
+  if (activeFavToken) {
+    html += `<div class="search-token-pill"><span>@fav</span><button class="search-token-remove" id="remove-fav-btn">&times;</button></div>`;
+  }
 
   if (activeSnToken) {
     const snLabel = activeSnToken === true ? '@sn' : `@sn:${activeSnToken}`;
@@ -255,13 +316,16 @@ function renderTokensUI() {
 
   searchTokensContainer.innerHTML = html;
 
+  const removeFavBtn = document.getElementById('remove-fav-btn');
+  if (removeFavBtn) removeFavBtn.addEventListener('click', removeFavToken);
+
   const removeSnBtn = document.getElementById('remove-sn-btn');
   if (removeSnBtn) removeSnBtn.addEventListener('click', removeSnToken);
 
   const removeDefBtn = document.getElementById('remove-def-btn');
   if (removeDefBtn) removeDefBtn.addEventListener('click', removePosToken);
 
-  searchInput.placeholder = (activePosToken || activeSnToken) ? '' : 'Type prompt...';
+  searchInput.placeholder = (activePosToken || activeSnToken) ? '' : 'type prompt...';
 }
 
 // search function
@@ -272,13 +336,23 @@ function evaluateSearch() {
 function searchWords(query) {
   let snPool = null;
   let defPool = null;
+  let favPool = null;
   const queryLower = query.toLowerCase();
   currentSnPrompts = [];
+
+  if ((queryLower.startsWith('@sn') && !activeSnToken) || (queryLower.startsWith('@def') && !activePosToken) || ((queryLower.startsWith('@fav') || queryLower.startsWith('@saved')) && !activeFavToken)) {
+    return;
+  }
 
   let explicitSn = null;
   if (queryLower.startsWith('@sn:')) {
     const spaceIdx = query.indexOf(' ');
     explicitSn = spaceIdx !== -1 ? query.slice(4, spaceIdx).trim() : query.slice(4).trim();
+  }
+
+  // resolve @fav pool
+  if (activeFavToken || queryLower.startsWith('@fav') || queryLower.startsWith('@saved')) {
+    favPool = new Set(savedWords);
   }
 
   // resolve @sn pool
@@ -289,7 +363,7 @@ function searchWords(query) {
     }
 
     let countKeys = [];
-    if (explicitSn && /^\d+$/.test(explicitSn)) countKeys = [parseInt(explicitSn, 10)];
+    if (explicitSn && /^\d+$/.text(explicitSn)) countKeys = [parseInt(explicitSn, 10)];
     else if (activeSnToken && activeSnToken !== true) countKeys = [parseInt(activeSnToken, 10)];
     else countKeys = [1, 2];
 
@@ -306,7 +380,11 @@ function searchWords(query) {
     currentSnPrompts = validPrompts;
 
     if (localStorage.getItem(storageKey)) {
-      matchedSnWords = JSON.parse(localStorage.getItem(storageKey));
+      try {
+        matchedSnWords = JSON.parse(localStorage.getItem(storageKey));
+      } catch (e) {
+        matchedSnWords = [];
+      }
     } else {
       let collectedWords = new Set();
       const allDictionaryWords = Object.keys(dictionaryData);
@@ -321,7 +399,19 @@ function searchWords(query) {
         }
       });
       matchedSnWords = Array.from(collectedWords);
-      try { localStorage.setItem(storageKey, JSON.stringify(matchedSnWords)); } catch (e) { }
+
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(matchedSnWords));
+      } catch (e) {
+        try {
+          Object.keys(localStorage).forEach(k => {
+            if (k.startsWith('sn_cache_')) localStorage.removeItem(k);
+          });
+          localStorage.setItem(storageKey, JSON.stringify(matchedSnWords));
+        } catch (err) {
+          // fallback if storage remains full
+        }
+      }
     }
     snPool = new Set(matchedSnWords);
   }
@@ -350,12 +440,22 @@ function searchWords(query) {
     defPool = new Set(basePool);
   }
 
-  // combine pools
+  // combine pools intersection
   let baseWords = [];
-  if (snPool !== null && defPool !== null) baseWords = [...snPool].filter(word => defPool.has(word));
-  else if (snPool !== null) baseWords = [...snPool];
-  else if (defPool !== null) baseWords = [...defPool];
-  else baseWords = Object.keys(dictionaryData);
+  let poolsToIntersect = [];
+  if (favPool !== null) poolsToIntersect.push(favPool);
+  if (snPool !== null) poolsToIntersect.push(snPool);
+  if (defPool !== null) poolsToIntersect.push(defPool);
+
+  if (poolsToIntersect.length > 0) {
+    poolsToIntersect.sort((a, b) => a.size - b.size);
+    let smallest = poolsToIntersect[0];
+    baseWords = [...smallest].filter(word => {
+      return poolsToIntersect.every(pool => pool.has(word));
+    });
+  } else {
+    baseWords = Object.keys(dictionaryData);
+  }
 
   // get active query
   let activeTextQuery = query;
@@ -371,6 +471,14 @@ function searchWords(query) {
       activeTextQuery = '';
     }
   }
+  if (queryLower.startsWith('@fav') || queryLower.startsWith('@saved')) {
+    const spaceIdx = activeTextQuery.indexOf(' ');
+    if (spaceIdx !== -1) {
+      activeTextQuery = activeTextQuery.slice(spaceIdx + 1).trim();
+    } else {
+      activeTextQuery = '';
+    }
+  }
 
   let matchedWords = [];
   if (activeTextQuery !== '') {
@@ -378,22 +486,32 @@ function searchWords(query) {
       const regex = new RegExp(activeTextQuery, 'i');
       matchedWords = baseWords.filter(word => regex.test(word));
     } catch (err) {
-      matchedWords = baseWords.filter(word => word.toLowerCase().includes(activeTextQuery.toLowerCase()));
+      const lowerQuery = activeTextQuery.toLowerCase();
+      matchedWords = baseWords.filter(word => word.toLowerCase().includes(lowerQuery));
     }
   } else {
     matchedWords = baseWords;
   }
 
-  // randomize search if completely empty + no tokens
-  if (query.trim() === '' && !activePosToken && !activeSnToken) {
-    for (let i = matchedWords.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [matchedWords[i], matchedWords[j]] = [matchedWords[j], matchedWords[i]];
+  const isCurrentlyEmpty = query.trim() === '' && !activePosToken && !activeSnToken && !activeFavToken;
+
+  if (isCurrentlyEmpty) {
+    if (!lastSearchQueryWasEmpty) {
+      isUserSortedWhileEmpty = false;
+      for (let i = matchedWords.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [matchedWords[i], matchedWords[j]] = [matchedWords[j], matchedWords[i]];
+      }
+      lastSearchQueryWasEmpty = true;
+      currentMatchedWords = matchedWords;
+      applySortingAndRender();
+    } else {
+      displayedCount = 0;
+      renderResults();
     }
-    currentMatchedWords = matchedWords;
-    displayedCount = 0;
-    renderResults();
   } else {
+    lastSearchQueryWasEmpty = false;
+    isUserSortedWhileEmpty = false;
     currentMatchedWords = matchedWords;
     applySortingAndRender();
   }
@@ -401,18 +519,22 @@ function searchWords(query) {
 
 // rendering
 function applySortingAndRender() {
-  currentMatchedWords.sort((a, b) => {
-    let comparison = 0;
-    if (sortType === 'alpha') {
-      comparison = a.localeCompare(b);
-    } else {
-      comparison = a.length - b.length;
-      if (comparison === 0) comparison = a.localeCompare(b);
-    }
-    return sortDirection === 'asc' ? comparison : -comparison;
-  });
+  const isQueryEmpty = searchInput.value.trim() === '' && !activePosToken && !activeSnToken;
 
-  displayedCount = 0
+  if (!isQueryEmpty) {
+    currentMatchedWords.sort((a, b) => {
+      let comparison = 0;
+      if (sortType === 'alpha') {
+        comparison = a.localeCompare(b);
+      } else {
+        comparison = a.length - b.length;
+        if (comparison === 0) comparison = a.localeCompare(b);
+      }
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }
+
+  displayedCount = 0;
   renderResults();
 }
 
@@ -440,10 +562,14 @@ function renderResults() {
   let batchHtml = '';
   batchToRender.forEach((word) => {
     const hasDefinition = wordHasRealDefinition(word);
-    const cssClass = hasDefinition ? 'word-pill has-definition' : 'word-pill no-definition';
+    const isSaved = savedWords.includes(word);
+
+    let baseClass = hasDefinition ? 'word-pill has-definition' : 'word-pill no-definition';
+    if (isSaved) baseClass += ' saved-word';
+
     const displayText = currentSnPrompts.length > 0 ? highlightSnMatch(word, currentSnPrompts) : word;
 
-    batchHtml += `<button class="${cssClass}" data-word="${word}">${displayText}</button>`;
+    batchHtml += `<button class ="${baseClass}" data-word="${word}">${displayText}</button>`;
   });
 
   gridContainer.insertAdjacentHTML('beforeend', batchHtml);
@@ -453,13 +579,46 @@ function renderResults() {
     if (!btn.dataset.bound) {
       btn.dataset.bound = 'true';
       const word = btn.getAttribute('data-word');
+
       if (wordHasRealDefinition(word)) {
         btn.addEventListener('click', () => openModal(word));
       } else {
         btn.style.cursor = 'default';
       }
+
+      // right-click to toggle favorite
+      btn.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        toggleSavedWord(word, btn);
+      });
     }
   });
+}
+
+function toggleSavedWord(word, btnElement) {
+  const index = savedWords.indexOf(word);
+  if (index === -1) {
+    savedWords.push(word);
+    btnElement.classList.add('saved-word');
+  } else {
+    savedWords.splice(index, 1);
+    btnElement.classList.remove('saved-word');
+  }
+
+  // flash animation
+  btnElement.classList.remove('flash-saved');
+  void btnElement.offsetWidth;
+  btnElement.classList.add('flash-saved');
+
+  try {
+    localStorage.setItem('word_bomb_saved_words', JSON.stringify(savedWords));
+  } catch (e) {
+    console.warn('Failed to save favorites to localStorage', e);
+  }
+
+  if (activeFavToken) {
+    evaluateSearch();
+  }
 }
 
 function handleGridScroll(e) {
@@ -469,7 +628,7 @@ function handleGridScroll(e) {
   }
 }
 
-function renderPlaceholder () {
+function renderPlaceholder() {
   resultsContainer.innerHTML = `
     <div class="placeholder-wrapper">
       <p class="placeholder-text">Enter a search query for results.</p>
@@ -490,7 +649,7 @@ function openRegexHelpModal() {
   content += `<li><strong>a.a</strong> - wildcard matching [<b>.</b>]</li>`;
   content += `<li><strong>[aeiou]{3}</strong> - 3 vowels in a row</li>`;
   content += `</ul>`;
-  content += `<p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-subtle);">Tip: Use <strong>@def</strong> for definitions, of <strong>@sn:[number]</strong> to search via number of solutions for letter chunk. (Make sure to press SPACE after using an @ command.)</p>`;
+  content += `<p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-subtle);">Tip: Use <strong>@def</strong> for definitions, or <strong>@sn:[number]</strong> to search via number of solutions for letter chunk. (Make sure to press SPACE after using an @ command.)</p>`;
 
   modalBody.innerHTML = content;
   modal.classList.remove('hidden');
@@ -540,7 +699,7 @@ function formatDefinitionText(text) {
   text = text.replace(/\[\[(.*?)\]\]/g, (match, word) => {
     word = word.trim();
     const upperWord = word.toUpperCase();
-    
+
     if (dictionaryData[upperWord] && wordHasRealDefinition(upperWord)) {
       return `<span class="def-link" data-word="${word}">${word}</span>`;
     }
